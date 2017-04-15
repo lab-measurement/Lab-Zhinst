@@ -11,6 +11,8 @@
 
 typedef ZIConnection Lab__Zhinst;
 
+#define ALLOC_START_SIZE 100
+
 static void
 handle_error(ZIResult_enum number, const char *function)
 {
@@ -19,7 +21,7 @@ handle_error(ZIResult_enum number, const char *function)
   
   char *buffer;
   ziAPIGetError(number, &buffer, NULL);
-  croak("Error in %s: %s\nnumber: %d\n", function, buffer, number);
+  croak("Error in %s: %s", function, buffer);
 }
 
 MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		
@@ -81,7 +83,7 @@ char *
 ListNodes(Lab::Zhinst conn, const char *path, U32 flags)
 CODE:
     char *nodes = NULL;
-    size_t nodes_len = 100;
+    size_t nodes_len = ALLOC_START_SIZE;
 
     while (1) {
         Renew(nodes, nodes_len, char);
@@ -117,23 +119,84 @@ OUTPUT:
     RETVAL
 
 
-unsigned char*
+SV *
 GetValueB(Lab::Zhinst conn, const char *path)
 CODE:
-    unsigned char *result = NULL;
-    size_t result_avail = 100;
-    
+    char *result = NULL;
+    size_t result_avail = ALLOC_START_SIZE;
+    unsigned length;
+
     while (1) {
-        Renew(result, result_avail, unsigned char);
-        unsigned int length;
-        int rv = ziAPIGetValueB(conn, path, result, &length, result_len);
+        Renew(result, result_avail, char);
+        int rv = ziAPIGetValueB(conn, path, (unsigned char*) result, &length, result_avail);
         if (rv == 0)
             break;
         if (rv != ZI_ERROR_LENGTH)
-            handle_error(rv, "ziAPIListNodes");
+            handle_error(rv, "ziAPIGetValueB");
 
-        nodes_len = (nodes_len * 3) / 2;
+        result_avail = (result_avail * 3) / 2;
     }
-    RETVAL = nodes;
+    RETVAL = newSVpvn(result, length);
+OUTPUT:
+    RETVAL
+
+void
+SetValueD(Lab::Zhinst conn, const char *path, double value)
+CODE:
+    handle_error(ziAPISetValueD(conn, path, value), "ziAPISetValueD");
+
+void
+SetValueI(Lab::Zhinst conn, const char *path, I32 value)
+CODE:
+    handle_error(ziAPISetValueI(conn, path, value), "ziAPISetValueI");
+
+
+void
+SetValueB(Lab::Zhinst conn, const char *path, SV *value)
+CODE:
+    if (!SvOK(value)) {
+       croak("value is not a valid scalar");
+    }
+    char *bytes;
+    STRLEN len;
+    bytes = SvPV(value, len);
+    handle_error(ziAPISetValueB(conn, path, (unsigned char *) bytes, len), "ziAPISetValueB");
+
+
+double
+SyncSetValueD(Lab::Zhinst conn, const char *path, double value)
+CODE:
+    double result = value;
+    handle_error(ziAPISyncSetValueD(conn, path, &result), "ziAPISyncSetValueD");
+    RETVAL = result;
+OUTPUT:
+    RETVAL
+
+I32
+SyncSetValueI(Lab::Zhinst conn, const char *path, I32 value)
+CODE:
+    I32 result = value;
+    handle_error(ziAPISyncSetValueI(conn, path,(ZIIntegerData *) &result), "ziAPISyncSetValueI");
+    RETVAL = result;
+OUTPUT:
+    RETVAL
+
+SV *
+SyncSetValueB(Lab::Zhinst conn, const char *path, SV *value)
+CODE:
+    if (!SvOK(value)) {
+       croak("value is not a valid scalar");
+    }
+    char *original;
+    STRLEN len;
+    original = SvPV(value, len);
+
+    char *new_string;
+    New(0, new_string, len, char);
+    Copy(original, new_string, len, char);
+    handle_error(ziAPISyncSetValueB(conn, path, (unsigned char *) new_string, (uint32_t *) &len, len),
+                 "ziAPISyncSetValueB");
+    RETVAL = newSVpvn(new_string, len);
+    Safefree(new_string);
 OUTPUT:
     RETVAL
