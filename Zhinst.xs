@@ -9,6 +9,10 @@
 
 #include "const-c.inc"
 
+#if (IVSIZE != 8 || UVSIZE != 8)
+#  error "Lab::Zhinst needs a perl with 64-bit integer support."
+#endif
+
 typedef ZIConnection Lab__Zhinst;
 
 #define ALLOC_START_SIZE 100
@@ -31,7 +35,8 @@ INCLUDE: const-xs.inc
 
 
 TYPEMAP: <<HERE
-Lab::Zhinst T_PTROBJ
+Lab::Zhinst          T_PTROBJ
+HV *                 T_HVREF_REFCOUNT_FIXED
 HERE
 
 
@@ -109,15 +114,33 @@ CODE:
 OUTPUT:
     RETVAL
 
-I32
+IV
 GetValueI(Lab::Zhinst conn, const char *path)
 CODE:
-    I32 result;
-    handle_error(ziAPIGetValueI(conn, path, (ZIIntegerData *) &result), "ziAPIGetValueI");
+    IV result;
+    handle_error(ziAPIGetValueI(conn, path, &result), "ziAPIGetValueI");
     RETVAL = result;
 OUTPUT:
     RETVAL
 
+HV *
+GetDemodSample(Lab::Zhinst conn, const char *path)
+CODE:
+    ZIDemodSample sample;
+    handle_error(ziAPIGetDemodSample(conn, path, &sample), "ziAPIGetDemodSample");
+    HV *hash = newHV();
+    hv_stores(hash, "timeStamp", newSVuv(sample.timeStamp));
+    hv_stores(hash, "x", newSVnv(sample.x));
+    hv_stores(hash, "y", newSVnv(sample.y));
+    hv_stores(hash, "frequency", newSVnv(sample.frequency));
+    hv_stores(hash, "phase", newSVnv(sample.phase));
+    hv_stores(hash, "dioBits", newSVuv(sample.dioBits));
+    hv_stores(hash, "trigger", newSVuv(sample.trigger));
+    hv_stores(hash, "auxIn0", newSVnv(sample.auxIn0));
+    hv_stores(hash, "auxIn1", newSVnv(sample.auxIn1));
+    RETVAL = hash;
+OUTPUT:
+    RETVAL
 
 SV *
 GetValueB(Lab::Zhinst conn, const char *path)
@@ -146,7 +169,7 @@ CODE:
     handle_error(ziAPISetValueD(conn, path, value), "ziAPISetValueD");
 
 void
-SetValueI(Lab::Zhinst conn, const char *path, I32 value)
+SetValueI(Lab::Zhinst conn, const char *path, IV value)
 CODE:
     handle_error(ziAPISetValueI(conn, path, value), "ziAPISetValueI");
 
@@ -172,11 +195,11 @@ CODE:
 OUTPUT:
     RETVAL
 
-I32
-SyncSetValueI(Lab::Zhinst conn, const char *path, I32 value)
+IV
+SyncSetValueI(Lab::Zhinst conn, const char *path, IV value)
 CODE:
-    I32 result = value;
-    handle_error(ziAPISyncSetValueI(conn, path,(ZIIntegerData *) &result), "ziAPISyncSetValueI");
+    IV result = value;
+    handle_error(ziAPISyncSetValueI(conn, path, &result), "ziAPISyncSetValueI");
     RETVAL = result;
 OUTPUT:
     RETVAL
@@ -194,7 +217,7 @@ CODE:
     char *new_string;
     New(0, new_string, len, char);
     Copy(original, new_string, len, char);
-    handle_error(ziAPISyncSetValueB(conn, path, (unsigned char *) new_string, (uint32_t *) &len, len),
+    handle_error(ziAPISyncSetValueB(conn, path, (uint8_t *) new_string, (uint32_t *) &len, len),
                  "ziAPISyncSetValueB");
     RETVAL = newSVpvn(new_string, len);
     Safefree(new_string);
