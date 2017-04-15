@@ -5,7 +5,7 @@
 
 #include "ppport.h"
 
-#include "/home/simon/perl/ziAPI.h"
+#include <ziAPI.h>
 
 #include "const-c.inc"
 
