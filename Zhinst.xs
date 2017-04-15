@@ -39,7 +39,7 @@ new(const char *class, const char *hostname, U16 port)
 CODE:
     ZIConnection connection;
     handle_error(ziAPIInit(&connection), "ziAPIInit");
-    handle_error(ziAPIConnectEx(connection, hostname, port, ZI_API_VERSION_5, NULL), "ziAPIConnectEx");
+    handle_error(ziAPIConnect(connection, hostname, port), "ziAPIConnect");
     RETVAL = connection;
 OUTPUT:
     RETVAL
@@ -56,7 +56,7 @@ CODE:
 char *
 ListImplementations()
 CODE:
-    size_t buffer_len = 1000;
+    size_t buffer_len = 100;
     char *buffer;
     New(0, buffer, buffer_len, char);
     handle_error(ziAPIListImplementations(buffer, buffer_len), "ziAPIListImplementations");
@@ -86,6 +86,47 @@ CODE:
     while (1) {
         Renew(nodes, nodes_len, char);
         int rv = ziAPIListNodes(conn, path, nodes, nodes_len, flags);
+        if (rv == 0)
+            break;
+        if (rv != ZI_ERROR_LENGTH)
+            handle_error(rv, "ziAPIListNodes");
+
+        nodes_len = (nodes_len * 3) / 2;
+    }
+    RETVAL = nodes;
+OUTPUT:
+    RETVAL
+
+
+double
+GetValueD(Lab::Zhinst conn, const char *path)
+CODE:
+    double result;
+    handle_error(ziAPIGetValueD(conn, path, &result), "ziAPIGetValueD");
+    RETVAL = result;
+OUTPUT:
+    RETVAL
+
+I32
+GetValueI(Lab::Zhinst conn, const char *path)
+CODE:
+    I32 result;
+    handle_error(ziAPIGetValueI(conn, path, (ZIIntegerData *) &result), "ziAPIGetValueI");
+    RETVAL = result;
+OUTPUT:
+    RETVAL
+
+
+unsigned char*
+GetValueB(Lab::Zhinst conn, const char *path)
+CODE:
+    unsigned char *result = NULL;
+    size_t result_avail = 100;
+    
+    while (1) {
+        Renew(result, result_avail, unsigned char);
+        unsigned int length;
+        int rv = ziAPIGetValueB(conn, path, result, &length, result_len);
         if (rv == 0)
             break;
         if (rv != ZI_ERROR_LENGTH)
