@@ -1,0 +1,13 @@
+*~
+*.c
+*.o
+*.bs
+*.inc
+Makefile
+/blib/
+pm_to_blib
+ppport.h
+/MYMETA.*
+/META*
+
+
