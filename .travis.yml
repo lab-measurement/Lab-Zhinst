@@ -27,5 +27,6 @@ install:
   - perl Makefile.PL
   - make
 script:
-  - make test
+  - /tmp/LabOne*/DataServer/ziDataServer &
+  - prove -bv t xt
   
