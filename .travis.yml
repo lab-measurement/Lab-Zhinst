@@ -25,6 +25,7 @@ install:
   - printenv LD_LIBRARY_PATH
   - cd $TRAVIS_BUILD_DIR
   - perl Makefile.PL
-
-script:
   - make
+script:
+  - make test
+  
