@@ -8,17 +8,19 @@ use blib;
 use Lab::Zhinst;
 use Devel::Peek;
 
-say  Lab::Zhinst::ListImplementations();
+# say  Lab::Zhinst::ListImplementations();
+
+# Lab::Zhinst::SetDebugLevel(0);
+# Lab::Zhinst::WriteDebugLog(0, "lala lala");
+# Lab::Zhinst::WriteDebugLog(5, "wo bin ich?");
 
 my $conn = Lab::Zhinst->new('localhost', 8004);
 say "API Version: ", $conn->GetConnectionAPILevel();
-my $nodes = $conn->ListNodes("/", ZI_LIST_NODES_ABSOLUTE | ZI_LIST_NODES_RECURSIVE);
-my @nodes = split '\n', $nodes;
-say for @nodes;
+say "Nodes: \n",  $conn->ListNodes("/", ZI_LIST_NODES_ABSOLUTE
+                                   | ZI_LIST_NODES_RECURSIVE);
 
-my $i;
-
-my $x = $conn->SyncSetValueB("/ZI/CONFIG/PORT", "101");
-
-say $x;
-
+my $i = 0;
+while (1) {
+    say $conn->GetValueB("/zi/about/copyright");
+    say ++$i;
+};
