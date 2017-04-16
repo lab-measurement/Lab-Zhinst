@@ -19,8 +19,10 @@ say "API Version: ", $conn->GetConnectionAPILevel();
 say "Nodes: \n",  $conn->ListNodes("/", ZI_LIST_NODES_ABSOLUTE
                                    | ZI_LIST_NODES_RECURSIVE);
 
-my $i = 0;
-while (1) {
-    say $conn->GetValueB("/zi/about/copyright");
-    say ++$i;
-};
+$conn->DiscoveryFind("localhost");
+
+# my $i = 0;
+# while (1) {
+#     say $conn->GetValueB("/zi/about/copyright");
+#     say ++$i;
+# };

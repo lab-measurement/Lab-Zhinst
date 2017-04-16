@@ -346,8 +346,21 @@ void
 ziAPIWriteDebugLog(I32 level, const char *message)
 
 
-#char *
-#DiscoveryFind(Lab::Zhinst conn, const char *device_address)
-#CODE:
-#    const char *device_id;
-    
+const char *
+DiscoveryFind(Lab::Zhinst conn, const char *device_address)
+CODE:
+    const char *device_id;
+    HANDLE_ERROR(conn, ziAPIDiscoveryFind, device_address, &device_id);
+    RETVAL = device_id;
+OUTPUT:
+    RETVAL
+
+
+const char *
+DiscoveryGet(Lab::Zhinst conn, const char *device_id)
+CODE:
+    const char *props_json;
+    HANDLE_ERROR(conn, ziAPIDiscoveryGet, device_id, &props_json);
+    RETVAL = props_json;
+OUTPUT:
+    RETVAL
