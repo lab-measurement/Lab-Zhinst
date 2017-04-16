@@ -1,5 +1,6 @@
 use ExtUtils::MakeMaker;
 use Config;
+use Cwd;
 
 if ($Config{ivsize} < 8 || $Config{uvsize} < 8) {
     die "Lab::Zhinst needs a perl with 64-bit integer support.\n" .
@@ -20,6 +21,8 @@ else {
     die "Unknown os $os";
 }
 
+my $cwd = getcwd();
+
 WriteMakefile(
     NAME              => 'Lab::Zhinst',
     VERSION_FROM      => 'lib/Lab/Zhinst.pm',
@@ -28,7 +31,7 @@ WriteMakefile(
     AUTHOR            => 'Simon Reinhardt <simon@(none)>',
     CCFLAGS           => '-Wall -Wno-deprecated-declarations',
     LICENSE           => 'perl',
-    LIBS              => [$libs], # e.g., '-lm'
+    LIBS              => ["-L$cwd " . $libs], # e.g., '-lm'
     DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
     INC               => '-I.', # e.g., '-I. -I/usr/include/other'
     );
