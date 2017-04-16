@@ -1,6 +1,5 @@
 package Lab::Zhinst;
 
-use 5.024000;
 use strict;
 use warnings;
 use Carp;

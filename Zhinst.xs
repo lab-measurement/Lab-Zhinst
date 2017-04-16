@@ -9,10 +9,6 @@
 
 #include "const-c.inc"
 
-#if (IVSIZE != 8 || UVSIZE != 8)
-#  error "Lab::Zhinst needs a perl with 64-bit integer support."
-#endif
-
 typedef ZIConnection Lab__Zhinst;
 
 #define ALLOC_START_SIZE 100

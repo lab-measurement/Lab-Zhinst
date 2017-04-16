@@ -1,23 +1,38 @@
-use 5.024000;
 use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
+use Config;
+
+if ($Config{ivsize} < 8 || $Config{uvsize} < 8) {
+    die "Lab::Zhinst needs a perl with 64-bit integer support.\n" .
+        "Make sure that perl has use64bitint defined."
+}
+
+my $os = $Config{osname};
+my $arch = $Config{ptrsize} >= 8 ? '64' : '32';
+
+my $libs;
+if ($os eq 'linux') {
+    $libs = '-lziAPI-linux' . $arch;
+}
+elsif ($os eq 'MSWin32') {
+    die "fixme";
+}
+else {
+    die "Unknown os $os";
+}
+
 WriteMakefile(
     NAME              => 'Lab::Zhinst',
-    VERSION_FROM      => 'lib/Lab/Zhinst.pm', # finds $VERSION, requires EU::MM from perl >= 5.5
+    VERSION_FROM      => 'lib/Lab/Zhinst.pm',
     PREREQ_PM         => {}, # e.g., Module::Name => 1.1
     ABSTRACT_FROM     => 'lib/Lab/Zhinst.pm', # retrieve abstract from module
     AUTHOR            => 'Simon Reinhardt <simon@(none)>',
     CCFLAGS           => '-Wall -Wno-deprecated-declarations',
-    #LICENSE           => 'perl',
-    #Value must be from legacy list of licenses here
-    #http://search.cpan.org/perldoc?Module%3A%3ABuild%3A%3AAPI
-    LIBS              => ['-lziAPI-linux64'], # e.g., '-lm'
+    LICENSE           => 'perl',
+    LIBS              => [$libs], # e.g., '-lm'
     DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
     INC               => '-I.', # e.g., '-I. -I/usr/include/other'
-	# Un-comment this if you add C files to link with later:
-    # OBJECT            => '$(O_FILES)', # link all the C files too
-);
+    );
+
 if  (eval {require ExtUtils::Constant; 1}) {
   # If you edit these definitions to change the constants used by this module,
   # you will need to use the generated const-c.inc and const-xs.inc
