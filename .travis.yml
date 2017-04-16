@@ -24,7 +24,6 @@ install:
   - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR
   - printenv LD_LIBRARY_PATH
   - cd $TRAVIS_BUILD_DIR
-  - perl -V
   - perl Makefile.PL
 
 script:

@@ -112,14 +112,6 @@ MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
 INCLUDE: const-xs.inc
 
 
-
-TYPEMAP: <<HERE
-Lab::Zhinst          T_PTROBJ
-HV *                 T_HVREF_REFCOUNT_FIXED
-HERE
-
-
-
 Lab::Zhinst
 new(const char *class, const char *hostname, U16 port)
 CODE:
