@@ -102,6 +102,11 @@ their output. The function will return an error if the provided buffer is too
 small to hold the result. This library will repeatedly reallocate buffers until
 they have a suitable size.
 
+=head1 LabOne API COVERAGE
+
+So far, this module only implements LabOne's core API. The 'data streaming' and
+'fast asynchronous operation' API's can be added on request.
+
 =head1 METHODS
 
 
