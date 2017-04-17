@@ -10,7 +10,7 @@ my $conn = Lab::Zhinst->new('localhost', 8004);
 isa_ok($conn, 'Lab::Zhinst');
 
 
-my $implementations = Lab::Zhinst::ListImplementations();
+my $implementations = ListImplementations();
 is($implementations, "ziAPI_Core\nziAPI_AsyncSocket\nziAPI_ziServer1",
     "ListImplementations");
 
