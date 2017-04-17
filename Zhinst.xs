@@ -71,7 +71,7 @@ handle_error(ZIConnection conn, ZIResult_enum number, const char *function)
 }
 
 static HV *
-demod_sample_to_hash(ZIDemodSample *sample)
+demod_sample_to_hash(pTHX_ ZIDemodSample *sample)
 {
   HV *hash = newHV();
   hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
@@ -87,7 +87,7 @@ demod_sample_to_hash(ZIDemodSample *sample)
 }
 
 static HV *
-dio_sample_to_hash(ZIDIOSample *sample)
+dio_sample_to_hash(pTHX_ ZIDIOSample *sample)
 {
   HV *hash = newHV();
   hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
@@ -97,7 +97,7 @@ dio_sample_to_hash(ZIDIOSample *sample)
 }
 
 static HV *
-aux_in_sample_to_hash(ZIAuxInSample *sample)
+aux_in_sample_to_hash(pTHX_ ZIAuxInSample *sample)
 {
   HV *hash = newHV();
   hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
@@ -205,7 +205,7 @@ GetDemodSample(Lab::Zhinst conn, const char *path)
 CODE:
     ZIDemodSample sample;
     HANDLE_ERROR(conn, ziAPIGetDemodSample, path, &sample);
-    RETVAL = demod_sample_to_hash(&sample);
+    RETVAL = demod_sample_to_hash(aTHX_ &sample);
 OUTPUT:
     RETVAL
 
@@ -215,7 +215,7 @@ GetDIOSample(Lab::Zhinst conn, const char *path)
 CODE:
     ZIDIOSample sample;
     HANDLE_ERROR(conn, ziAPIGetDIOSample, path, &sample);
-    RETVAL = dio_sample_to_hash(&sample);
+    RETVAL = dio_sample_to_hash(aTHX_ &sample);
 OUTPUT:
     RETVAL
 
@@ -225,7 +225,7 @@ GetAuxInSample(Lab::Zhinst conn, const char *path)
 CODE:
     ZIAuxInSample sample;
     HANDLE_ERROR(conn, ziAPIGetAuxInSample, path, &sample);
-    RETVAL = aux_in_sample_to_hash(&sample);
+    RETVAL = aux_in_sample_to_hash(aTHX_ &sample);
 OUTPUT:
     RETVAL
 
