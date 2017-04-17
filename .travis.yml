@@ -29,4 +29,7 @@ install:
 script:
   - /tmp/LabOne*/DataServer/ziDataServer &
   - prove -bv t xt
-  
+
+
+notifications:
+  email: false

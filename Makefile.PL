@@ -11,11 +11,16 @@ my $os = $Config{osname};
 my $arch = $Config{ptrsize} >= 8 ? '64' : '32';
 
 my $libs;
+my $inc = '-I. ';
+
 if ($os eq 'linux') {
     $libs = '-lziAPI-linux' . $arch;
 }
 elsif ($os eq 'MSWin32') {
-    die "fixme";
+    $libs = '"-lC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\lib\\'
+        . "ziAPI-win${arch}.lib";
+    $inc .=
+        '"-IC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\include';
 }
 else {
     die "Unknown os $os";
@@ -33,7 +38,7 @@ WriteMakefile(
     LICENSE           => 'perl',
     LIBS              => ["-L$cwd " . $libs], # e.g., '-lm'
     DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
-    INC               => '-I.', # e.g., '-I. -I/usr/include/other'
+    INC               => $inc, # e.g., '-I. -I/usr/include/other'
     );
 
 if  (eval {require ExtUtils::Constant; 1}) {
