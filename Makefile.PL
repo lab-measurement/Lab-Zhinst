@@ -18,9 +18,9 @@ if ($os eq 'linux') {
 }
 elsif ($os eq 'MSWin32') {
     $libs = '"-lC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\lib\\'
-        . "ziAPI-win${arch}.lib";
+        . "ziAPI-win${arch}.lib" . '"';
     $inc .=
-        '"-IC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\include';
+        '"-IC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\include"';
 }
 else {
     die "Unknown os $os";
