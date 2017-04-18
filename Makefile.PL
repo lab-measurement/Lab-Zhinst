@@ -43,6 +43,7 @@ WriteMakefile(
     DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
     INC               => $inc, # e.g., '-I. -I/usr/include/other'
     META_MERGE => {
+        'meta-spec' => {version => 2},
         resources => {
             repository => {
                 type => 'git',
