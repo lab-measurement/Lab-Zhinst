@@ -21,7 +21,6 @@ Lab::Zhinst - Perl bindings to the LabOne API of Zurich Instruments
  # Read x and y value from the Lock-In demodulator:
 
  my $connection = Lab::Zhinst->new($address, 8004);
- # FIXME: do device discovery
  my $device = "/dev3281";
  my $hash_ref = $connection->GetDemodSample("$device/DEMODS/0/SAMPLE");
  printf("x = %g, y = %g\n", $hash_ref->{x}, $hash_ref->{y});
