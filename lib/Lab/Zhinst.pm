@@ -34,7 +34,7 @@ Lab::Zhinst - Perl bindings to the LabOne API of Zurich Instruments
 
 =item *
 
-Download the LabOne API for Linux from L<www.zhinst.com>.
+Download the LabOne API for Linux from L<https://www.zhinst.com>.
 
 =item *
 
@@ -48,6 +48,25 @@ Use your favourite cpan client to install Lab::Zhinst.
 
 =back
 
+To install into your home directory (non-root user), you can alternatively
+first download and unpack  the Lab::Zhinst distribution archive, copy both
+header and library into it, and manually install with
+
+=over
+
+=item * C<perl Makefile.PL>
+
+=item * C<make>
+
+=item * C<make install>
+
+=back
+
+To install it into your home directory, you will need something like
+e.g. L<local::lib>, 
+L<plenv|https://github.com/tokuhirom/plenv> or
+L<perlbrew|https://perlbrew.pl/>.
+
 =head2 Windows
 
 =over
@@ -55,7 +74,7 @@ Use your favourite cpan client to install Lab::Zhinst.
 =item *
 
 Make sure that you have a 32-bit version of StrawberryPerl 5.20 or 5.18.
-See L<https://rt.cpan.org/Public/Bug/Display.html?id=121219>.
+It is currently not possible to use other versions (see L<https://rt.cpan.org/Public/Bug/Display.html?id=121219>).
 
 =item *
 
@@ -236,7 +255,7 @@ Feel free to contact us at
 
 =head1 AUTHOR
 
-Simon Reinhardt, E<lt>simon@stud.uni-regensburg.deE<gt>
+Simon Reinhardt, E<lt>simon.reinhardt@stud.uni-regensburg.deE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
