@@ -455,8 +455,6 @@ our @EXPORT = qw(
 	ZI_WARNING_UNDERRUN
 );
 
-our $VERSION = '0.01';
-
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
     # XS function.
