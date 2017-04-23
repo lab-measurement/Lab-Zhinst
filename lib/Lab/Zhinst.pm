@@ -479,7 +479,7 @@ sub AUTOLOAD {
 }
 
 require XSLoader;
-XSLoader::load('Lab::Zhinst', $VERSION);
+XSLoader::load('Lab::Zhinst', $Lab::Zhinst::VERSION);
 
 # Preloaded methods go here.
 
