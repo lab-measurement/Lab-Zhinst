@@ -39,6 +39,11 @@ script:
   - /tmp/LabOne*/DataServer/ziDataServer &
   - prove -bv t xt
 
-
 notifications:
   email: false
+  irc: 
+    channels: "chat.freenode.net#labmeasurement"
+    on_success: always
+    on_failure: always
+    use_notice: true
+    skip_join: true
