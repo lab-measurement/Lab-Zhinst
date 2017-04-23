@@ -47,24 +47,21 @@ Use your favourite cpan client to install Lab::Zhinst.
 
 =back
 
-To install into your home directory (non-root user), you can alternatively
-first download and unpack  the Lab::Zhinst distribution archive, copy both
-header and library into it, and manually install with
+=head3 Non-root installation in home directory
 
-=over
-
-=item * C<perl Makefile.PL>
-
-=item * C<make>
-
-=item * C<make install>
-
-=back
-
-To install it into your home directory, you will need something like
-e.g. L<local::lib>, 
+you will need something like e.g. L<local::lib>, 
 L<plenv|https://github.com/tokuhirom/plenv> or
 L<perlbrew|https://perlbrew.pl/>.
+
+Add the directory which contains the shared library to the B<LIBRARY_PATH> and
+B<LD_LIBRARY_PATH> environment variables and add the directory which contains
+the header F<ziAPI.h> to the B<CPATH> environment variable.
+
+You can then install Lab::Zhinst with your favourite cpan client.
+
+See our L<Travis CI build
+file|https://github.com/lab-measurement/Lab-Zhinst/blob/master/.travis.yml>
+for the exact list of needed commands.
 
 =head2 Windows
 
