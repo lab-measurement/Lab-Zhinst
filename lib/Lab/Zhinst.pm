@@ -225,7 +225,7 @@ ZI_LIST_NODES_ABSOLUTE, ZI_LIST_NODES_LEAFSONLY, ZI_LIST_NODES_SETTINGSONLY.
 
 =head1 REPORTING BUGS
 
-Please report bugs at L<https://github.com/amba/Lab-Zhinst/issues>.
+Please report bugs at L<https://github.com/lab-measurement/Lab-Zhinst/issues>.
 
 =head1 CONTACT
 
