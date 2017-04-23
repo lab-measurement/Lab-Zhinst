@@ -14,7 +14,12 @@ install:
   - ps: Start-Process "C:/Program Files/Zurich Instruments/LabOne/DataServer/ziDataServer.exe"
     # The import library needs to be in the Path
   - path "C:\Program Files\Zurich Instruments\LabOne\API\C\lib";%PATH%
-   
+  - cpanm Dist::Zilla
+  - dzil authordeps --missing | cpanm
+  - dzil listdeps --missing | cpanm
+  - let BUILD_DIR=Lab-Zhinst-build-dir
+  - dzil build --in %BUILD_DIR%
+  - cd %BUILD_DIR%
 build_script:
   - perl Makefile.PL
   - dmake
