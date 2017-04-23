@@ -1,60 +1,6 @@
-use ExtUtils::MakeMaker;
+# included from MakeMaker_footer.pl
+
 use ExtUtils::Constant;
-use Config;
-use Cwd;
-
-if ($Config{ivsize} < 8 || $Config{uvsize} < 8) {
-    die "Lab::Zhinst needs a perl with 64-bit integer support.\n" .
-        "Make sure that perl has use64bitint defined."
-}
-
-my $os = $Config{osname};
-my $arch = $Config{ptrsize} >= 8 ? '64' : '32';
-
-my $libs;
-my $inc = '-I. ';
-
-if ($os eq 'linux') {
-    $libs = '-lziAPI-linux' . $arch;
-}
-elsif ($os eq 'MSWin32') {
-    $libs = '"-lC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\lib\\'
-        . "ziAPI-win${arch}.lib" . '"';
-    $inc .=
-        '"-IC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\include"';
-}
-else {
-    die "Unknown os $os";
-}
-
-my $cwd = getcwd();
-
-WriteMakefile(
-    NAME              => 'Lab::Zhinst',
-    VERSION_FROM      => 'lib/Lab/Zhinst.pm',
-    MIN_PERL_VERSION  => '5.008',
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
-    ABSTRACT_FROM     => 'lib/Lab/Zhinst.pm', # retrieve abstract from module
-    AUTHOR
-    => 'Simon Reinhardt <simon.reinhardt@stud.uni-regensburg.de>',
-    CCFLAGS           => '-Wall -Wno-deprecated-declarations',
-    LICENSE           => 'perl',
-    LIBS              => ["-L$cwd " . $libs], # e.g., '-lm'
-    DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
-    INC               => $inc, # e.g., '-I. -I/usr/include/other'
-    META_MERGE => {
-        'meta-spec' => {version => 2},
-        resources => {
-            repository => {
-                type => 'git',
-                url => 'git://github.com/amba/Lab-Zhinst.git',
-                web => 'https://github.com/amba/Lab-Zhinst',
-            },
-            x_IRC => 'irc://chat.freenode.net/#labmeasurement',
-            x_MailingList => 'https://www-mailman.uni-regensburg.de/mailman/listinfo/lab-measurement-users'
-        },
-    },
-    );
 
 # If you edit these definitions to change the constants used by this module,
 # you will need to use the generated const-c.inc and const-xs.inc

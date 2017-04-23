@@ -1,9 +1,0 @@
-Makefile.PL
-MANIFEST
-ppport.h
-README
-Zhinst.xs
-typemap
-t/Lab-Zhinst.t
-xt/basic.t
-lib/Lab/Zhinst.pm
