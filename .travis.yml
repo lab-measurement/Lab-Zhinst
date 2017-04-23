@@ -13,20 +13,29 @@ perl:
   - 5.10
   - 5.8
 
-
+before_install:
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init
+  - build-perl
+  - perl -V
+  - build-dist
 install:
   # Download ziAPI
   - cd /tmp
   - wget www.zhinst.com/system/files/downloads/files/LabOneLinux64-16.12.42529.tar.gz
   - tar -xf LabOne*
-  - cp LabOne*/API/C/include/ziAPI.h $TRAVIS_BUILD_DIR/
-  - cp LabOne*/API/C/lib/libziAPI-linux64.so $TRAVIS_BUILD_DIR/
-  - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR
+  - mkdir -p ~/local/lib ~/local/include
+  - cp LabOne*/API/C/include/ziAPI.h ~/local/include
+  - cp LabOne*/API/C/lib/libziAPI-linux64.so ~/local/lib
+  - export LD_LIBRARY_PATH=$HOME/local/lib
+  - export LIBRARY_PATH=$LD_LIBRARY_PATH
+  - export CPATH=$HOME/local/include
   - printenv LD_LIBRARY_PATH
-  - cd $TRAVIS_BUILD_DIR
+  - cd $BUILD_DIR
+  - cpan-install --deps
+script:
   - perl Makefile.PL
   - make
-script:
   - /tmp/LabOne*/DataServer/ziDataServer &
   - prove -bv t xt
 
