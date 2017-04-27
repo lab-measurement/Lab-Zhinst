@@ -171,7 +171,7 @@ ZI_LIST_NODES_ABSOLUTE, ZI_LIST_NODES_LEAFSONLY, ZI_LIST_NODES_SETTINGSONLY.
 =head2 GetDemodSample
 
  my $hash_ref = $connection->GetDemodSample($path);
- # keys: timeStamp, x, y, frequency, phase, dioBits, trigger, auxIn0, auIn1
+ # keys: timeStamp, x, y, frequency, phase, dioBits, trigger, auxIn0, auxIn1
  
 =head2 GetDIOSample
 
