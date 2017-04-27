@@ -185,27 +185,27 @@ ZI_LIST_NODES_ABSOLUTE, ZI_LIST_NODES_LEAFSONLY, ZI_LIST_NODES_SETTINGSONLY.
 
 =head2 SetValueD
 
- $connection->SetValueD($double);
+ $connection->SetValueD($path, $double);
 
 =head2 SetValueI
 
- $connection->SetValueI($integer);
+ $connection->SetValueI($path, $integer);
 
 =head2 SetValueB
 
- $connection->SetValueB($byte_string);
+ $connection->SetValueB($path, $byte_string);
 
 =head2 SyncSetValueD
 
- my $set_value = $connection->SyncSetValueD($double);
+ my $set_value = $connection->SyncSetValueD($path, $double);
 
 =head2 SyncSetValueI
 
- my $set_value = $connection->SyncSetValueI($integer);
+ my $set_value = $connection->SyncSetValueI($path, $integer);
 
 =head2 SyncSetValueB
 
- my $set_value = $connection->SyncSetValueB($byte_array);
+ my $set_value = $connection->SyncSetValueB($path, $byte_array);
 
 =head2 Sync
 
