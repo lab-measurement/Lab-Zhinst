@@ -243,6 +243,8 @@ Feel free to contact us at
 
 =over
 
+=item * L<Blog post on Lab::Zhinst|http://blogs.perl.org/users/simon_reinhardt/2017/04/test.html>
+
 =item * L<Lab::Measurement>
 
 =item * L<Lab::VISA>
