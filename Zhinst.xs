@@ -111,6 +111,13 @@ MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
 
 INCLUDE: const-xs.inc
 
+#####################################################################
+#
+# Important:
+# If a method or function throws, add it to the @modify_methods array in
+# Zhinst.pm
+#
+#####################################################################
 
 Lab::Zhinst
 new(const char *class, const char *hostname, U16 port)
@@ -245,8 +252,10 @@ CODE:
         if (rv == 0)
             break;
         if (rv != ZI_ERROR_LENGTH)
+          {
+            Safefree(result);
             handle_error(conn, rv, "ziAPIGetValueB");
-
+          }
         result_avail = (result_avail * 3) / 2;
     }
     RETVAL = newSVpvn(result, length);
