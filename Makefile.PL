@@ -42,16 +42,16 @@ else {
 my $ccflags = 
 
 WriteMakefile(
-    "ABSTRACT" => "Perl bindings to the LabOne API of Zurich Instruments ",
-    "AUTHOR" => "Simon Reinhardt <simon.reinhardt\@stud.uni-regensburg.de>",
-    "CONFIGURE_REQUIRES" => {
+    ABSTRACT => "Perl bindings to the LabOne API of Zurich Instruments ",
+    AUTHOR => "Simon Reinhardt <simon.reinhardt\@stud.uni-regensburg.de>",
+    CONFIGURE_REQUIRES => {
         "ExtUtils::MakeMaker" => 0
     },
-    "DISTNAME" => "Lab-Zhinst",
-    "LICENSE" => "perl",
-    "MIN_PERL_VERSION" => "5.008003",
-    "NAME" => "Lab::Zhinst",
-    "PREREQ_PM" => {
+    DISTNAME => "Lab-Zhinst",
+    LICENSE => "perl",
+    MIN_PERL_VERSION => "5.008003",
+    NAME => "Lab::Zhinst",
+    PREREQ_PM => {
         "AutoLoader" => 0,
         "Carp" => 0,
         "Exporter" => 0,
@@ -59,17 +59,26 @@ WriteMakefile(
         "strict" => 0,
         "warnings" => 0
     },
-    "TEST_REQUIRES" => {
+    TEST_REQUIRES => {
         "Test::More" => 0
     },
-    "VERSION" => "0.06",
-    "test" => {
-        "TESTS" => "t/*.t"
-    },
-    "LIBS" => [$libs],
-    "INC" => $inc,
-    "CCFLAGS" => '-Wall -Wno-deprecated-declarations',
-    
+    VERSION => "0.06",
+    LIBS => [$libs],
+    INC => $inc,
+    CCFLAGS => '-Wall -Wno-deprecated-declarations',
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources => {
+            homepage => 'http://www.labmeasurement.de',
+            repository => {
+                type => 'git',
+                url => 'git://github.com/lab-measurement/Lab-Zhinst.git',
+                web => 'https://github.com/lab-measurement/Lab-Zhinst',
+            },
+            x_MailingList => 'https://www-mailman.uni-regensburg.de/mailman/listinfo/lab-measurement-users',
+            x_IRC => 'irc://chat.freenode.net/#labmeasurement',
+        }
+    }
     );
 
 use ExtUtils::Constant;

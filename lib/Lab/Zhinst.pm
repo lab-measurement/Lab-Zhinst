@@ -108,7 +108,7 @@ object.
 =head2 Error Handling
 
 Most ziAPI functions return an error code. This library checks the return
-values from the ziAPI functions and throws exceptions (with croak) on error.
+values from the ziAPI functions and calls L<Carp>'s croak function on error.
 
 =head2 Automatic Memory Allocation
 
