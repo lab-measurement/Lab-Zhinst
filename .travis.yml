@@ -26,7 +26,7 @@ install:
   - export CPATH=$HOME/local/include
   - printenv LD_LIBRARY_PATH
 script:
-  - cd $BUILD_DIR
+  - cd $TRAVIS_BUILD_DIR
   - perl Makefile.PL
   - make
   - /tmp/LabOne*/DataServer/ziDataServer &
