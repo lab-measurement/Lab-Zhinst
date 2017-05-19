@@ -274,11 +274,10 @@ package Lab::Zhinst;
 use strict;
 use warnings;
 use Carp;
-use Class::Method::Modifiers;
-use Try::Tiny;
 require Exporter;
 use AutoLoader;
 
+our $VERSION = '0.06';
 our @ISA = qw(Exporter);
 
 our @EXPORT = qw(
@@ -480,22 +479,6 @@ sub AUTOLOAD {
 
 require XSLoader;
 XSLoader::load('Lab::Zhinst', $Lab::Zhinst::VERSION);
-
-my @modify_methods = qw/new ListImplementations GetConnectionAPILevel ListNodes
-GetValueD GetValueI GetDemodSample GetDIOSample GetAuxInSample GetValueB
-SetValueD SetValueI SetValueB SyncSetValueD SyncSetValueI
-SyncSetValueB Sync EchoDevice DiscoveryFind DiscoveryGet/;
-
-around [@modify_methods] => sub {
-    my $orig = shift;
-    my @args = @_;
-    try {
-        &{$orig}(@args);
-    }
-    catch {
-        croak "$_";
-    };
-};
 
 1;
 __END__
