@@ -12,12 +12,6 @@ install:
   - start /wait msiexec.exe /l* labone.log /i LabOne.msi /qn ADDLOCAL=FT_ZI_API_C,FT_ZI_UHF
     # The import library needs to be in the Path
   - path "C:\Program Files\Zurich Instruments\LabOne\API\C\lib";%PATH%
-  - cpanm -v -n Dist::Zilla
-  - dzil authordeps --missing | cpanm -v -n
-  - dzil listdeps --missing | cpanm -v -n
-  - set BUILD_DIR=Lab-Zhinst-build-dir
-  - dzil build --in %BUILD_DIR%
-  - cd %BUILD_DIR%
 build_script:
   - ps: Start-Process "C:/Program Files/Zurich Instruments/LabOne/DataServer/ziDataServer.exe"
   - perl Makefile.PL
