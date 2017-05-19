@@ -13,12 +13,6 @@ perl:
   - 5.10
   - 5.8
 
-before_install:
-  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-  - source ~/travis-perl-helpers/init
-  - build-perl
-  - perl -V
-  - build-dist
 install:
   # Download ziAPI
   - cd /tmp
@@ -31,9 +25,8 @@ install:
   - export LIBRARY_PATH=$LD_LIBRARY_PATH
   - export CPATH=$HOME/local/include
   - printenv LD_LIBRARY_PATH
-  - cd $BUILD_DIR
-  - cpan-install --deps
 script:
+  - cd $BUILD_DIR
   - perl Makefile.PL
   - make
   - /tmp/LabOne*/DataServer/ziDataServer &

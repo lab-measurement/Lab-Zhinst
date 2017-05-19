@@ -1,4 +1,76 @@
-# included from MakeMaker_footer.pl
+use strict;
+use warnings;
+
+use 5.008003;
+use ExtUtils::MakeMaker;
+
+use Config;
+use Env;
+
+if ($Config{ivsize} < 8 || $Config{uvsize} < 8) {
+    die "Lab::Zhinst needs a perl with 64-bit integer support.\n" .
+        "Make sure that perl has use64bitint defined."
+}
+
+my $os = $Config{osname};
+my $arch = $Config{ptrsize} >= 8 ? '64' : '32';
+
+my $libs = '';
+my $inc = '-I. ';
+
+if ($os eq 'linux') {
+    my @lib_dirs;
+    my $library_path = $ENV{LIBRARY_PATH};
+    if ($library_path) {
+        @lib_dirs = (split ':', $library_path);
+        @lib_dirs = map "-L$_", @lib_dirs;
+        $libs  .= join ' ', @lib_dirs;
+    }
+    
+    $libs .= " -lziAPI-linux${arch}";
+}
+elsif ($os eq 'MSWin32') {
+    $libs = '"-lC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\lib\\'
+        . "ziAPI-win${arch}.lib" . '"';
+    $inc .=
+        '"-IC:\\Program Files\\Zurich Instruments\\LabOne\\API\\C\\include"';
+}
+else {
+    die "Unknown os $os";
+}
+
+my $ccflags = 
+
+WriteMakefile(
+    "ABSTRACT" => "Perl bindings to the LabOne API of Zurich Instruments ",
+    "AUTHOR" => "Simon Reinhardt <simon.reinhardt\@stud.uni-regensburg.de>",
+    "CONFIGURE_REQUIRES" => {
+        "ExtUtils::MakeMaker" => 0
+    },
+    "DISTNAME" => "Lab-Zhinst",
+    "LICENSE" => "perl",
+    "MIN_PERL_VERSION" => "5.008003",
+    "NAME" => "Lab::Zhinst",
+    "PREREQ_PM" => {
+        "AutoLoader" => 0,
+        "Carp" => 0,
+        "Exporter" => 0,
+        "XSLoader" => 0,
+        "strict" => 0,
+        "warnings" => 0
+    },
+    "TEST_REQUIRES" => {
+        "Test::More" => 0
+    },
+    "VERSION" => "0.06",
+    "test" => {
+        "TESTS" => "t/*.t"
+    },
+    "LIBS" => [$libs],
+    "INC" => $inc,
+    "CCFLAGS" => '-Wall -Wno-deprecated-declarations',
+    
+    );
 
 use ExtUtils::Constant;
 
