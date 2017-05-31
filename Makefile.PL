@@ -62,7 +62,7 @@ WriteMakefile(
     TEST_REQUIRES => {
         "Test::More" => 0
     },
-    VERSION => "0.06",
+    VERSION => "0.07",
     LIBS => [$libs],
     INC => $inc,
     CCFLAGS => '-Wall -Wno-deprecated-declarations',
