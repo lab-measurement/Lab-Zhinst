@@ -257,7 +257,7 @@ Simon Reinhardt, E<lt>simon.reinhardt@stud.uni-regensburg.deE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-The following license only covers the perl frontend to LabOne. LabOne uses
+The following license only covers the perl front end to LabOne. LabOne uses
 different licensing terms, and needs to be installed separately by the user.
 
 Copyright (C) 2017 by Simon Reinhardt
