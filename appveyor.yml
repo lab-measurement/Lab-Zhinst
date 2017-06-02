@@ -19,7 +19,7 @@ install:
 build_script:
   - ps: Start-Process "C:/Program Files/Zurich Instruments/LabOne/DataServer/ziDataServer.exe"
   - perl Makefile.PL
-  - %make_name%
+  - '%make_name%'
   - prove -bv t xt
 
       
