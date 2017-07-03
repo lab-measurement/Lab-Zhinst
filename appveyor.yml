@@ -1,5 +1,6 @@
 environment:
   matrix:
+    - strawberry_version: 5.26.0.1 --x86
     - strawberry_version: 5.20.3.3 --x86
     - strawberry_version: 5.18.4.1 --x86
       
