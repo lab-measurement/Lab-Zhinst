@@ -1,8 +1,11 @@
 environment:
   matrix:
     - strawberry_version: 5.26.0.1 --x86
+      make_version: gmake
     - strawberry_version: 5.20.3.3 --x86
+      make_version: dmake
     - strawberry_version: 5.18.4.1 --x86
+      make_version: dmake
       
 install:
   - choco install --allowemptychecksum strawberryperl --version %strawberry_version%
@@ -16,7 +19,7 @@ install:
 build_script:
   - ps: Start-Process "C:/Program Files/Zurich Instruments/LabOne/DataServer/ziDataServer.exe"
   - perl Makefile.PL
-  - dmake
+  - '%make_version%'
   - prove -bv t xt
 
       
