@@ -318,7 +318,7 @@ CODE:
     if (!SvOK(value)) {
        croak("value is not a valid scalar");
     }
-    char *bytes;
+    const char *bytes;
     STRLEN len;
     bytes = SvPV(value, len);
     int rv = ziAPISetValueB(conn, path, (unsigned char *) bytes, len);
@@ -351,7 +351,7 @@ CODE:
     if (!SvOK(value)) {
        croak("value is not a valid scalar");
     }
-    char *original;
+    const char *original;
     STRLEN len;
     original = SvPV(value, len);
 
