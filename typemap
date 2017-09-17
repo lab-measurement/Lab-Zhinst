@@ -1,5 +1,7 @@
 Lab::Zhinst          T_PTROBJ
 HV *                 T_HVREF_REFCOUNT_FIXED
+uint16_t             T_UV
+uint32_t             T_UV
 
 ##########################
 INPUT
