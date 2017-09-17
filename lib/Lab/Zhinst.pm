@@ -10,19 +10,23 @@ Lab::Zhinst - Perl bindings to the LabOne API of Zurich Instruments
 
  # LabOne's "Getting Started" example in Perl:
 
+ # Create connection object
+ my ($rv, $connection) = Lab::Zhinst->new();
+ if ($rv) {
+     # handle error ...
+ }
  # Connect to DataServer at localhost, port 8004.
- my $connection = Lab::Zhinst->new("localhost", 8004);
+ ($rv)  = $connection->Connect("localhost", 8004);
 
  # Set all demodulator rates of device dev1046 to 150 Hz.
- $connection->SetValueD("/dev1046/demods/*/rate", 150);
+ my ($rv) = $connection->SetValueD("/dev1046/demods/*/rate", 150);
 
  ####################################################
 
  # Read x and y value from the Lock-In demodulator:
 
- my $connection = Lab::Zhinst->new($address, 8004);
  my $device = "/dev3281";
- my $hash_ref = $connection->GetDemodSample("$device/DEMODS/0/SAMPLE");
+ my ($rv, $hash_ref) = $connection->GetDemodSample("$device/DEMODS/0/SAMPLE");
  printf("x = %g, y = %g\n", $hash_ref->{x}, $hash_ref->{y});
 
 =head1 INSTALLATION
@@ -80,7 +84,8 @@ Download and install the LabOne API for Windows (MSI installer).
 
 Make sure that the library directory
 F<C:\Program Files\Zurich Instruments\LabOne\API\C\lib> is included in the PATH
-environment variable. Otherwise loading of our Zhinst.xs.dll will fail.
+environment variable. Otherwise loading the dynamic library F<Zhinst.xs.dll>
+will fail.
 
 =item *
 
@@ -98,130 +103,212 @@ L<LabOne manual|https://www.zhinst.com/sites/default/files/LabOneProgrammingManu
 
 The following features have been added to make the interface more Perlish:
 
-=head2 Object Orientation
+=head2 Object orientation
 
-Most ziAPI functions receive a ZIConnection as their first argument. The C<new>
+Most ziAPI functions receive a ZIConnection as their first argument. The C<Init>
 method of this library will create a ZIConnection object and bless it into the
 Lab::Zhinst class. Most library functions are then called on this Lab::Zhinst
 object.
 
-=head2 Error Handling
+=head2 Return values and error handling
 
-Most ziAPI functions return an error code. This library checks the return
-values from the ziAPI functions and calls L<Carp>'s croak function on error.
+Most ziAPI functions return an error code. The Perl functions return lists,
+where the first element is the error code:
 
-=head2 Automatic Memory Allocation
+ my ($error_code, $first_return_value, $second_return_value) = $connection->foobar(@arguments);
 
-Some ziAPI functions, like ziAPIListNodes, require a user provided buffer for
-their output. The function will return an error if the provided buffer is too
-small to hold the result. This library will repeatedly reallocate buffers until
-they have a suitable size.
+The return values are only valid if C<$error_code> is 0.
 
 =head1 LabOne API COVERAGE
 
 So far, this module only implements LabOne's core API. The 'data streaming' and
 'fast asynchronous operation' API's can be added on request.
 
-=head1 EXPORTED FUNCTIONS
+# =head1 EXPORTED FUNCTIONS
 
-=head2 ListImplementations
+# =head2 ziAPIListImplementations
 
- my $implementations = ListImplementations();
+#  my $implementations = ListImplementations();
 
-=head2 SetDebugLevel
+# =head2 SetDebugLevel
 
- SetDebugLevel($level);
+#  SetDebugLevel($level);
 
-Allowed levels: 0 (trace), 1 (info), ..., 5 (fatal), 6 (status).
+# Allowed levels: 0 (trace), 1 (info), ..., 5 (fatal), 6 (status).
 
-=head2 WriteDebugLog
+# =head2 WriteDebugLog
 
- WriteDebugLog($level, $message);
+# WriteDebugLog($level, $message);
 
-=head1 PROVIDED METHODS
+=head1 FUNCTIONS/METHODS
 
-=head2 new
+All non-methods are exported by default.
 
- my $connection = Lab::Zhinst->new($dataserver_address, $dataserver_port);
+=head2 Connecting to Data Server
 
+=head3 Init
 
-=head2 GetConnectionAPILevel
+ my ($rv, $connection) = Lab::Zhinst->Init();
 
- my $level = $connection->GetConnectionAPILevel();
+Return Lab::Zhinst object. Automatically call C<ziAPIDestroy> if C<$connection>
+goes out of scope.
 
-=head2 ListNodes
+=head3 Connect
 
- my $nodes = $connection->ListNodes($path, $flags);
+ my ($rv) = $connection->Connect($hostname, $port);
+
+=head3 Disconnect
+
+ my ($rv) = $connection->Disconnect();
+
+=head3 ziAPIListImplementations
+
+ my ($rv, $implementations) = ziAPIListImplementations();
+
+=head3 GetConnectionAPILevel
+
+ my ($rv, $level) = $connection->GetConnectionAPILevel();
+
+=head2 Tree
+
+=head3 ListNodes
+
+ my ($rv, $nodes) = $connection->ListNodes($path, $bufferSize, $flags);
 
 C<$flags> is bitwise or of ZI_LIST_NODES_NONE, ZI_LIST_NODES_RECURSIVE,
 ZI_LIST_NODES_ABSOLUTE, ZI_LIST_NODES_LEAFSONLY, ZI_LIST_NODES_SETTINGSONLY.
 
-=head2 GetValueD
+=head2 Set and Get Parameters
 
- my $double = $connection->GetValueD($path);
+=head3 GetValueD
 
-=head2 GetValueI
+ my ($rv, $double) = $connection->GetValueD($path);
 
- my $integer = $connection->GetValueI($path);
+=head3 GetValueI
+
+ my ($rv, $integer) = $connection->GetValueI($path);
  
-=head2 GetValueB
 
- my $byte_string = $connection->GetValueB($path);
+=head3 GetDemodSample
 
-=head2 GetDemodSample
-
- my $hash_ref = $connection->GetDemodSample($path);
+ my ($rv, $hash_ref) = $connection->GetDemodSample($path);
  # keys: timeStamp, x, y, frequency, phase, dioBits, trigger, auxIn0, auxIn1
  
-=head2 GetDIOSample
+=head3 GetDIOSample
 
- my $hash_ref = $connection->GetDIOSample($path);
+ my ($rv, $hash_ref) = $connection->GetDIOSample($path);
  # keys: timeStamp, bits, reserved
  
-=head2 GetAuxInSample
+=head3 GetAuxInSample
 
- my $hash_ref = $connection->GetAuxInSample($path);
+ my ($rv, $hash_ref) = $connection->GetAuxInSample($path);
  # keys: timeStamp, ch0, ch1
 
-=head2 SetValueD
+=head3 GetValueB
 
- $connection->SetValueD($path, $double);
+ my ($rv, $byte_string) = $connection->GetValueB($path, $bufferSize);
 
-=head2 SetValueI
+=head3 SetValueD
 
- $connection->SetValueI($path, $integer);
+ my ($rv) = $connection->SetValueD($path, $double);
 
-=head2 SetValueB
+=head3 SetValueI
 
- $connection->SetValueB($path, $byte_string);
+ my ($rv) = $connection->SetValueI($path, $integer);
 
-=head2 SyncSetValueD
+=head3 SetValueB
 
- my $set_value = $connection->SyncSetValueD($path, $double);
+ my ($rv) = $connection->SetValueB($path, $byte_string);
 
-=head2 SyncSetValueI
+=head3 SyncSetValueD
 
- my $set_value = $connection->SyncSetValueI($path, $integer);
+ my ($rv, $set_value) = $connection->SyncSetValueD($path, $double);
 
-=head2 SyncSetValueB
+=head3 SyncSetValueI
 
- my $set_value = $connection->SyncSetValueB($path, $byte_array);
+ my ($rv, $set_value) = $connection->SyncSetValueI($path, $integer);
 
-=head2 Sync
+=head3 SyncSetValueB
 
- $connection->Sync();
+ my ($rv, $set_value) = $connection->SyncSetValueB($path, $byte_array);
 
-=head2 EchoDevice
+=head3 Sync
 
- $connection->EchoDevice($device_serial);
+ my ($rv) = $connection->Sync();
 
-=head2 DiscoveryFind
+=head3 EchoDevice
 
- my $device_id = $connection->DiscoveryFind($device_address);
+ my ($rv) = $connection->EchoDevice($device_serial);
 
-=head2 DiscoveryGet
+=head2 Data Streaming
 
- my $json = $connection->DiscoveryGet($device_id);
+=head3 ziAPIAllocateEventEx
+
+ my ($event) = ziAPIAllocateEventEx();
+
+Return object of type Lab::Zhinst::ZIEvent. Return undef on error.
+
+C<ziAPIDeallocateEventEx> will be called on C<$event> when it goes out of
+scope.
+
+=head3 Subscribe
+
+ my ($rv) = $connection->Subscribe($path);
+
+=head3 UnSubscribe
+
+ my ($rv) = $connection->UnSubscribe($path);
+
+=head3 PollDataEx
+
+ my ($rv, $data) = $connection->PollDataEx($event, $timeout_milliseconds);
+
+C<$data> holds a hashref representing a 'struct ZIEvent'. It has the following
+structure:
+
+ $data = {
+     valueType => $valueType,
+     count     => $count,
+     path      => $path,
+     values    => [@values],
+ };
+
+For scalar data like ZIDoubleData, the elements of C<@values> are scalars. For
+Samples (Demod, AuxIn, DIO, ...) the elements are hashrefs.
+
+=head3 GetValueAsPollData
+
+ my ($rv) = $connection->GetValueAsPollData($path);
+
+
+
+=head2 Error Handling and Logging in the LabOne C API
+
+=head3 ziAPIGetError
+
+ my ($rv, $error_string) = ziAPIGetError($result);
+
+=head3 GetLastError
+
+ my ($rv, $error_string) = $connection->GetLastError($bufferSize);
+
+=head3 ziAPISetDebugLevel
+
+ ziAPISetDebugLevel($level);
+
+=head3 ziAPIWriteDebugLog
+
+ ziAPIWriteDebugLog($level, $message);
+
+=head2 Device discovery
+
+=head3 DiscoveryFind
+
+ my ($rv, $device_id) = $connection->DiscoveryFind($device_address);
+
+=head3 DiscoveryGet
+
+ my ($rv, $json) = $connection->DiscoveryGet($device_id);
 
 =head1 REPORTING BUGS
 
@@ -281,9 +368,11 @@ our $VERSION = '0.07';
 our @ISA = qw(Exporter);
 
 our @EXPORT = qw(
-    ListImplementations
-    SetDebugLevel
-    WriteDebugLog
+    ziAPIListImplementations
+    ziAPIAllocateEventEx
+    ziAPIGetError
+    ziAPISetDebugLevel
+    ziAPIWriteDebugLog
     
     MAX_EVENT_SIZE
 	MAX_NAME_LEN
