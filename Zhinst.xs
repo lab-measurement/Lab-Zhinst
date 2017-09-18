@@ -82,13 +82,13 @@ zievent_value(pTHX_ ZIEvent *ev, uint32_t index)
     case ZI_VALUE_TYPE_INTEGER_DATA:
         return newSViv(ev->value.integerData[index]);
     case ZI_VALUE_TYPE_DEMOD_SAMPLE:
-        return demod_sample_to_hash(&ev->value.demodSample[index]);
+        return demod_sample_to_hash(aTHX_ &ev->value.demodSample[index]);
     case ZI_VALUE_TYPE_AUXIN_SAMPLE:
-        return aux_in_sample_to_hash(&ev->value.auxInSample[index]);
+        return aux_in_sample_to_hash(aTHX_ &ev->value.auxInSample[index]);
     case ZI_VALUE_TYPE_DIO_SAMPLE:
-        return dio_sample_to_hash(&ev->value.dioSample[index]);
+        return dio_sample_to_hash(aTHX_ &ev->value.dioSample[index]);
     case ZI_VALUE_TYPE_IMPEDANCE_SAMPLE:
-        return impedance_sample_to_hash(&ev->value.impedanceSample[index]);
+        return impedance_sample_to_hash(aTHX_ &ev->value.impedanceSample[index]);
     default:
         croak("not yet implemented ZIEvent value type %u", type);
     }
