@@ -44,11 +44,5 @@ like($value_b, qr/Zurich Instruments/, "GetValueB");
 is($rv, 0, "ziAPIGetError retval");
 is($error_string, "Provided Buffer is too small", "ziAPIGetError");
 
-($rv, $nodes) = $conn->ListNodes("/", 10,
-                                    ZI_LIST_NODES_ABSOLUTE | ZI_LIST_NODES_RECURSIVE);
-is($rv, ZI_ERROR_LENGTH);
-($rv, $error_string) = $conn->GetLastError(100);
-is($rv, 0, "GetLastError retval");
-is($error_string, "Provided Buffer is too small", "GetLastError");
 
 done_testing();
