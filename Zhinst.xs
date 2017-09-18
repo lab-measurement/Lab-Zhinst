@@ -15,7 +15,7 @@ typedef ZIConnection Lab__Zhinst;
 
 # define ZHINST_UNUSED __attribute__((__unused__))
 
-static HV *
+static SV *
 demod_sample_to_hash(pTHX_ ZIDemodSample *sample)
 {
   HV *hash = newHV();
@@ -31,7 +31,7 @@ demod_sample_to_hash(pTHX_ ZIDemodSample *sample)
   return newRV_noinc((SV *) hash);
 }
 
-static HV *
+static SV *
 dio_sample_to_hash(pTHX_ ZIDIOSample *sample)
 {
   HV *hash = newHV();
@@ -41,7 +41,7 @@ dio_sample_to_hash(pTHX_ ZIDIOSample *sample)
   return newRV_noinc((SV *) hash);        
 }
 
-static HV *
+static SV *
 aux_in_sample_to_hash(pTHX_ ZIAuxInSample *sample)
 {
   HV *hash = newHV();
@@ -65,7 +65,7 @@ INCLUDE: const-xs.inc
 
 
 void
-ziAPIInit(const char *class, const char *hostname, U16 port)
+ziAPIInit(const char *class)
 PPCODE:
     ZIConnection conn;
     int rv = ziAPIInit(&conn);
@@ -133,7 +133,7 @@ PPCODE:
 void
 ziAPIGetValueD(Lab::Zhinst conn, const char *path)
 PPCODE:
-    double result;
+    ZIDoubleData result;
     int rv = ziAPIGetValueD(conn, path, &result);
     mXPUSHi(rv);
     if (rv == 0)
@@ -185,40 +185,26 @@ PPCODE:
     char *buffer;
     Newx(buffer, bufferSize, char);
     unsigned int length;
-    int rv = ziAPIGetValueB(conn, path, buffer, &length, bufferSize);
+    int rv = ziAPIGetValueB(conn, path, (unsigned char *) buffer, &length, bufferSize);
     mXPUSHi(rv);
-    if (rv == 0) {
-        mXPUSH
-    while (1) {
-        Renew(result, result_avail, char);
-        int rv = ziAPIGetValueB(conn, path, (unsigned char*) result, &length,
-                                result_avail);
-        if (rv == 0)
-            break;
-        if (rv != ZI_ERROR_LENGTH)
-          {
-            Safefree(result);
-            handle_error(aTHX_ conn, rv, "ziAPIGetValueB");
-          }
-        result_avail = (result_avail * 3) / 2;
-    }
-    RETVAL = newSVpvn(result, length);
-    Safefree(result);
-OUTPUT:
-    RETVAL
+    if (rv == 0)
+        mXPUSHp(buffer, length);
+    Safefree(buffer);
 
 
 void
-ziAPISetValueD(Lab::Zhinst conn, const char *path, double value)
+ziAPISetValueD(Lab::Zhinst conn, const char *path, ZIDoubleData value)
 PPCODE:
     int rv = ziAPISetValueD(conn, path, value);
-    handle_error(aTHX_ conn, rv, "ziAPISetValueD");
+    mXPUSHi(rv);
+
 
 void
 ziAPISetValueI(Lab::Zhinst conn, const char *path, IV value)
 PPCODE:
     int rv = ziAPISetValueI(conn, path, value);
-    handle_error(aTHX_ conn, rv, "ziAPISetValueI");
+    mXPUSHi(rv);
+
 
 void
 ziAPISetValueB(Lab::Zhinst conn, const char *path, SV *value)
@@ -230,30 +216,28 @@ PPCODE:
     STRLEN len;
     bytes = SvPV(value, len);
     int rv = ziAPISetValueB(conn, path, (unsigned char *) bytes, len);
-    handle_error(aTHX_ conn, rv, "ziAPISetValueB");
+    mXPUSHi(rv);
 
-
-double
-ziAPISyncSetValueD(Lab::Zhinst conn, const char *path, double value)
+void
+ziAPISyncSetValueD(Lab::Zhinst conn, const char *path, ZIDoubleData value)
 PPCODE:
-    double result = value;
+    ZIDoubleData result = value;
     int rv = ziAPISyncSetValueD(conn, path, &result);
-    handle_error(aTHX_ conn, rv, "ziAPISyncSetValueD");
-    RETVAL = result;
-OUTPUT:
-    RETVAL
+    mXPUSHi(rv);
+    if (rv == 0)
+        mXPUSHn(result);
 
-IV
-ziAPISyncSetValueI(Lab::Zhinst conn, const char *path, IV value)
+
+void
+ziAPISyncSetValueI(Lab::Zhinst conn, const char *path, ZIIntegerData value)
 PPCODE:
-    IV result = value;
+    ZIIntegerData result = value;
     int rv = ziAPISyncSetValueI(conn, path, &result);
-    handle_error(aTHX_ conn, rv, "ziAPISyncSetValueI");
-    RETVAL = result;
-OUTPUT:
-    RETVAL
+    mXPUSHi(rv);
+    if (rv == 0)
+        mXPUSHi(result);
 
-SV *
+void
 ziAPISyncSetValueB(Lab::Zhinst conn, const char *path, SV *value)
 PPCODE:
     if (!SvOK(value)) {
@@ -264,28 +248,27 @@ PPCODE:
     original = SvPV(value, len);
 
     char *new_string;
-    New(0, new_string, len, char);
+    Newx(new_string, len, char);
     Copy(original, new_string, len, char);
-    int rv = ziAPISyncSetValueB(conn,  path, (uint8_t *) new_string,
-                                (uint32_t *) &len, len);
-    handle_error(aTHX_ conn, rv, "ziAPISyncSetValueB");
-    RETVAL = newSVpvn(new_string, len);
+    uint32_t length = len;
+    int rv = ziAPISyncSetValueB(conn,  path, (uint8_t *) new_string, &length, len);
+    mXPUSHi(rv);
+    if (rv == 0)
+        mXPUSHp(new_string, length);
     Safefree(new_string);
-OUTPUT:
-    RETVAL
 
 
 void
 ziAPISync(Lab::Zhinst conn)
 PPCODE:
     int rv = ziAPISync(conn);
-    handle_error(aTHX_ conn, rv, "ziAPISync");
+    mXPUSHi(rv);
 
 void
 ziAPIEchoDevice(Lab::Zhinst conn, const char *device_serial)
 PPCODE:
     int rv = ziAPIEchoDevice(conn, device_serial);
-    handle_error(aTHX_ conn, rv, "ziAPIEchoDevice");
+    mXPUSHi(rv);
 
 void
 ziAPISetDebugLevel(I32 level)
@@ -294,23 +277,21 @@ void
 ziAPIWriteDebugLog(I32 level, const char *message)
 
 
-const char *
+void
 ziAPIDiscoveryFind(Lab::Zhinst conn, const char *device_address)
 PPCODE:
     const char *device_id;
     int rv = ziAPIDiscoveryFind(conn, device_address, &device_id);
-    handle_error(aTHX_ conn, rv, "ziAPIDiscoveryFind");
-    RETVAL = device_id;
-OUTPUT:
-    RETVAL
+    mXPUSHi(rv);
+    if (rv == 0)
+        mXPUSHp(device_id, strlen(device_id));
 
 
-const char *
+void
 ziAPIDiscoveryGet(Lab::Zhinst conn, const char *device_id)
 PPCODE:
     const char *props_json;
     int rv = ziAPIDiscoveryGet(conn, device_id, &props_json);
-    handle_error(aTHX_ conn, rv, "ziAPIDiscoveryGet");
-    RETVAL = props_json;
-OUTPUT:
-    RETVAL
+    mXPUSHi(rv);
+    if (rv == 0)
+        mXPUSHp(props_json, strlen(props_json));
