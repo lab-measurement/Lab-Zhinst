@@ -281,9 +281,10 @@ our $VERSION = '0.07';
 our @ISA = qw(Exporter);
 
 our @EXPORT = qw(
-    ListImplementations
-    SetDebugLevel
-    WriteDebugLog
+    ziAPIListImplementations
+    ziAPIGetError
+    ziAPISetDebugLevel
+    ziAPIWriteDebugLog
     
     MAX_EVENT_SIZE
 	MAX_NAME_LEN

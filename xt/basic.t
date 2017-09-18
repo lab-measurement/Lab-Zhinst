@@ -14,7 +14,7 @@ isa_ok($conn, 'Lab::Zhinst');
 is($rv, 0, "Connect retval");
 
 
-($rv, my $implementations) = ListImplementations();
+($rv, my $implementations) = ziAPIListImplementations();
 is($rv, 0, "ListImplementations retval");
 is($implementations, "ziAPI_Core\nziAPI_AsyncSocket\nziAPI_ziServer1",
     "ListImplementations");
@@ -40,6 +40,15 @@ is($rv, 0, "GetValueB retval");
 like($value_b, qr/Zurich Instruments/, "GetValueB");
 
 
+($rv, my $error_string) = ziAPIGetError(ZI_ERROR_LENGTH);
+is($rv, 0, "ziAPIGetError retval");
+is($error_string, "Provided Buffer is too small", "ziAPIGetError");
 
+($rv, $nodes) = $conn->ListNodes("/", 10,
+                                    ZI_LIST_NODES_ABSOLUTE | ZI_LIST_NODES_RECURSIVE);
+is($rv, ZI_ERROR_LENGTH);
+($rv, $error_string) = $conn->GetLastError(100);
+is($rv, 0, "GetLastError retval");
+is($error_string, "Provided Buffer is too small", "GetLastError");
 
 done_testing();

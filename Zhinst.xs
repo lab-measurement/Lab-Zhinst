@@ -94,6 +94,7 @@ PPCODE:
     mXPUSHi(rv);
 
 
+MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst
 
 void
 ziAPIListImplementations()
@@ -107,6 +108,7 @@ PPCODE:
         mXPUSHp(buffer, strlen(buffer));
     Safefree(buffer);
 
+MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
 
 void
 ziAPIGetConnectionAPILevel(Lab::Zhinst conn)
@@ -270,11 +272,49 @@ PPCODE:
     int rv = ziAPIEchoDevice(conn, device_serial);
     mXPUSHi(rv);
 
+
+
+
+
+MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst
+
+void
+ziAPIGetError(ZIResult_enum result)
+PPCODE:
+    int base;
+    char *buffer;
+    int rv = ziAPIGetError(result, &buffer, &base);
+    mXPUSHi(rv);
+    if (rv == 0) {
+        mXPUSHp(buffer, strlen(buffer));
+        mXPUSHi(base);
+    }
+
+
+MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
+
+void
+ziAPIGetLastError(Lab::Zhinst conn, uint32_t bufferSize)
+PPCODE:
+    char *buffer;
+    Newx(buffer, bufferSize, char);
+    int rv = ziAPIGetLastError(conn, buffer, bufferSize);
+    mXPUSHi(rv);
+    if (rv == 0)
+        mXPUSHp(buffer, strlen(buffer));
+    Safefree(buffer);
+
+
+MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst
+
 void
 ziAPISetDebugLevel(I32 level)
 
 void
 ziAPIWriteDebugLog(I32 level, const char *message)
+
+
+MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
 
 
 void
