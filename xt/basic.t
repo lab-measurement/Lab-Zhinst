@@ -23,8 +23,9 @@ is($implementations, "ziAPI_Core\nziAPI_AsyncSocket\nziAPI_ziServer1",
 is($rv, 0, "GetConnectionAPILevel retval");
 is($api_level, 1, "GetConnectionAPILevel");
 
-
-($rv, my $nodes) = $conn->ListNodes("/", ZI_LIST_NODES_ABSOLUTE | ZI_LIST_NODES_RECURSIVE);
+my $buffer_size = 100000;
+($rv, my $nodes) = $conn->ListNodes("/", $buffer_size,
+                                    ZI_LIST_NODES_ABSOLUTE | ZI_LIST_NODES_RECURSIVE);
 is($rv, 0, "ListNodes retval");
 like($nodes, qr{/zi/about/version}i, "ListNodes");
 
