@@ -240,6 +240,48 @@ ZI_LIST_NODES_ABSOLUTE, ZI_LIST_NODES_LEAFSONLY, ZI_LIST_NODES_SETTINGSONLY.
 
  my ($rv) = $connection->EchoDevice($device_serial);
 
+=head2 Data Streaming
+
+=head3 ziAPIAllocateEventEx
+
+ my ($event) = ziAPIAllocateEventEx();
+
+Return object of type Lab::Zhinst::ZIEvent. Return undef on error.
+
+C<ziAPIDeallocateEventEx> will be called on C<$event> when it goes out of
+scope.
+
+=head3 Subscribe
+
+ my ($rv) = $connection->Subscribe($path);
+
+=head3 UnSubscribe
+
+ my ($rv) = $connection->UnSubscribe($path);
+
+=head3 PollDataEx
+
+ my ($rv, $data) = $connection->PollDataEx($event, $timeout_milliseconds);
+
+C<$data> holds a hashref representing a 'struct ZIEvent'. It has the following
+structure:
+
+ $data = {
+     valueType => $valueType,
+     count     => $count,
+     path      => $path,
+     values    => [@values],
+ };
+
+For scalar data like ZIDoubleData, the elements of C<@values> are scalars. For
+Samples (Demod, AuxIn, DIO, ...) the elements are hashrefs.
+
+=head3 GetValueAsPollData
+
+ my ($rv) = $connection->GetValueAsPollData($path);
+
+
+
 =head2 Error Handling and Logging in the LabOne C API
 
 =head3 ziAPIGetError
@@ -327,6 +369,7 @@ our @ISA = qw(Exporter);
 
 our @EXPORT = qw(
     ziAPIListImplementations
+    ziAPIAllocateEventEx
     ziAPIGetError
     ziAPISetDebugLevel
     ziAPIWriteDebugLog

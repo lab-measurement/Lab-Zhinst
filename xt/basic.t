@@ -44,6 +44,42 @@ like($value_b, qr/Zurich Instruments/, "GetValueB");
 is($rv, 0, "ziAPIGetError retval");
 is($error_string, "Provided Buffer is too small", "ziAPIGetError");
 
+
+
+#
+# Data Streaming
+#
+{
+    my $event = ziAPIAllocateEventEx();
+    isa_ok($event, "Lab::Zhinst::ZIEvent");
+    my $path = '/zi/config/port';
+    my ($rv) = $conn->Subscribe($path);
+    is($rv, 0, "Subscribe retval");
+    
+    ($rv) = $conn->GetValueAsPollData($path);
+    is($rv, 0, "GetValueAsPollData retval");
+
+    ($rv) = $conn->GetValueAsPollData($path);
+    is($rv, 0, "GetValueAsPollData retval");
+    
+
+    my ($rv, $data) = $conn->PollDataEx($event, 1000);
+    is($rv, 0, "PollDataEx retval");
+
+    is_deeply($data, {
+        valueType => ZI_VALUE_TYPE_INTEGER_DATA,
+        count => 2,
+        path => $path,
+        values => [8004, 8004]
+              }, "Integer event");
+        
+
+    ($rv) = $conn->UnSubscribe($path);
+    is($rv, 0, "UnSubscribe retval");
+}
+
+
+
 ($rv) = $conn->Disconnect();
 is($rv, 0, "Disconnect retval");
 done_testing();
