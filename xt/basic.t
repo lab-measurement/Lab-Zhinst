@@ -55,23 +55,16 @@ is($error_string, "Provided Buffer is too small", "ziAPIGetError");
     my $path = '/ZI/CONFIG/PORT';
     my ($rv) = $conn->Subscribe($path);
     is($rv, 0, "Subscribe retval");
-    
-    ($rv) = $conn->GetValueAsPollData($path);
-    is($rv, 0, "GetValueAsPollData retval");
 
     ($rv) = $conn->GetValueAsPollData($path);
     is($rv, 0, "GetValueAsPollData retval");
     
-
-    my ($rv, $data) = $conn->PollDataEx($event, 1000);
+    ($rv, my $data) = $conn->PollDataEx($event, 1000);
     is($rv, 0, "PollDataEx retval");
 
-    is_deeply($data, {
-        valueType => ZI_VALUE_TYPE_INTEGER_DATA,
-        count => 2,
-        path => $path,
-        values => [8004, 8004]
-              }, "Integer event");
+    is($data->{valueType}, ZI_VALUE_TYPE_INTEGER_DATA, "data valueType");
+    is($data->{count}, 1, "data count");
+    is_deeply($data->{values}, [8004], "data values");
         
 
     ($rv) = $conn->UnSubscribe($path);
