@@ -56,18 +56,16 @@ static SV *
 zievent_value(pTHX_ ZIEvent *ev, uint32_t index)
 {
     uint32_t type = ev->valueType;
-    SV *rv;
     switch (type) {
     case ZI_VALUE_TYPE_NONE:
         croak("ZI_VALUE_TYPE_NONE in zievent_value");
     case ZI_VALUE_TYPE_DOUBLE_DATA:
-        rv = newSVnv(ev->value.doubleData[index]);
+        return newSVnv(ev->value.doubleData[index]);
     case ZI_VALUE_TYPE_INTEGER_DATA:
-        rv = newSViv(ev->value.integerData[index]);
+        return newSViv(ev->value.integerData[index]);
     default:
         croak("not yet implemented ZIEvent value type %u", type);
     }
-    return rv;
 }
 
 static SV *
