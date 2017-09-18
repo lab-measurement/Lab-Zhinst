@@ -44,5 +44,6 @@ like($value_b, qr/Zurich Instruments/, "GetValueB");
 is($rv, 0, "ziAPIGetError retval");
 is($error_string, "Provided Buffer is too small", "ziAPIGetError");
 
-
+($rv) = $connect->Disconnect();
+is($rv, 0, "Disconnect retval");
 done_testing();

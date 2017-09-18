@@ -64,6 +64,11 @@ MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
 INCLUDE: const-xs.inc
 
 
+#
+# Connecting to Data Server
+#
+
+
 void
 ziAPIInit(const char *class)
 PPCODE:
@@ -110,14 +115,23 @@ PPCODE:
 
 MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
 
+# FIXME: ziAPIConnectEx not needed?
+  
 void
 ziAPIGetConnectionAPILevel(Lab::Zhinst conn)
 PPCODE:
-    ZIAPIVersion_enum version;
-    int rv = ziAPIGetConnectionAPILevel(conn, &version);
+    ZIAPIVersion_enum apiLevel;
+    int rv = ziAPIGetConnectionAPILevel(conn, &apiLevel);
     mXPUSHi(rv);
     if (rv == 0)
-        mXPUSHi(version);
+        mXPUSHi(apiLevel);
+
+# FIXME: ziAPIGetRevision
+
+
+#
+# Tree
+#
 
 
 void
@@ -130,6 +144,11 @@ PPCODE:
     if (rv == 0)
         mXPUSHp(nodes, strlen(nodes));
     Safefree(nodes);
+
+
+#
+# Set and Get Parameters
+#
 
 
 void
@@ -273,7 +292,9 @@ PPCODE:
     mXPUSHi(rv);
 
 
-
+#
+# Error Handling and Logging in the LabOne C API
+#
 
 
 MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst
@@ -312,6 +333,11 @@ ziAPISetDebugLevel(I32 level)
 
 void
 ziAPIWriteDebugLog(I32 level, const char *message)
+
+
+#
+# Device discovery
+#
 
 
 MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
