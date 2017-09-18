@@ -19,37 +19,73 @@ typedef ZIEvent      *Lab__Zhinst__ZIEvent;
 static SV *
 demod_sample_to_hash(pTHX_ ZIDemodSample *sample)
 {
-  HV *hash = newHV();
-  hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
-  hv_stores(hash, "x",         newSVnv(sample->x));
-  hv_stores(hash, "y",         newSVnv(sample->y));
-  hv_stores(hash, "frequency", newSVnv(sample->frequency));
-  hv_stores(hash, "phase",     newSVnv(sample->phase));
-  hv_stores(hash, "dioBits",   newSVuv(sample->dioBits));
-  hv_stores(hash, "trigger",   newSVuv(sample->trigger));
-  hv_stores(hash, "auxIn0",    newSVnv(sample->auxIn0));
-  hv_stores(hash, "auxIn1",    newSVnv(sample->auxIn1));
-  return newRV_noinc((SV *) hash);
+    HV *hash = newHV();
+    hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
+    hv_stores(hash, "x",         newSVnv(sample->x));
+    hv_stores(hash, "y",         newSVnv(sample->y));
+    hv_stores(hash, "frequency", newSVnv(sample->frequency));
+    hv_stores(hash, "phase",     newSVnv(sample->phase));
+    hv_stores(hash, "dioBits",   newSVuv(sample->dioBits));
+    hv_stores(hash, "trigger",   newSVuv(sample->trigger));
+    hv_stores(hash, "auxIn0",    newSVnv(sample->auxIn0));
+    hv_stores(hash, "auxIn1",    newSVnv(sample->auxIn1));
+    return newRV_noinc((SV *) hash);
 }
 
 static SV *
 dio_sample_to_hash(pTHX_ ZIDIOSample *sample)
 {
-  HV *hash = newHV();
-  hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
-  hv_stores(hash, "bits",      newSVuv(sample->bits));
-  hv_stores(hash, "reserved",  newSVuv(sample->reserved));
-  return newRV_noinc((SV *) hash);        
+    HV *hash = newHV();
+    hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
+    hv_stores(hash, "bits",      newSVuv(sample->bits));
+    hv_stores(hash, "reserved",  newSVuv(sample->reserved));
+    return newRV_noinc((SV *) hash);        
 }
 
 static SV *
 aux_in_sample_to_hash(pTHX_ ZIAuxInSample *sample)
 {
-  HV *hash = newHV();
-  hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
-  hv_stores(hash, "ch0",       newSVnv(sample->ch0));
-  hv_stores(hash, "ch1",       newSVnv(sample->ch1));
-  return newRV_noinc((SV *) hash);
+    HV *hash = newHV();
+    hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
+    hv_stores(hash, "ch0",       newSVnv(sample->ch0));
+    hv_stores(hash, "ch1",       newSVnv(sample->ch1));
+    return newRV_noinc((SV *) hash);
+}
+
+static SV *
+zievent_value(pTHX_ ZIEvent *ev, uint32_t index)
+{
+    uint32_t type = ev->valueType;
+    SV *rv;
+    switch (type) {
+    case ZI_VALUE_TYPE_NONE:
+        croak("ZI_VALUE_TYPE_NONE in zievent_value");
+    case ZI_VALUE_TYPE_DOUBLE_DATA:
+        rv = newSVnv(ev->value.doubleData[index]);
+    case ZI_VALUE_TYPE_INTEGER_DATA:
+        rv = newSViv(ev->value.integerData[index]);
+    default:
+        croak("not yet implemented ZIEvent value type %u", type);
+    }
+    return rv;
+}
+
+static SV *
+zievent_to_hash(pTHX_ ZIEvent *ev)
+{
+    HV *hash = newHV();
+    hv_stores(hash, "valueType", newSVuv(ev->valueType));
+    uint32_t count = ev->count;
+    hv_stores(hash, "count", newSVuv(count));
+    hv_stores(hash, "path", newSVpv((const char *) ev->path, 0));
+    
+    AV *values = newAV();
+    uint32_t i;
+    for (i = 0; i < count; ++i)
+        av_push(values, zievent_value(aTHX_ ev, i));
+    hv_stores(hash, "values", newRV_noinc((SV *) values));
+    
+    return newRV_noinc((SV *) hash);
 }
 
 static SV *
@@ -302,14 +338,18 @@ ziAPISubscribe(Lab::Zhinst conn, const char *path)
 IV
 ziAPIUnSubscribe(Lab::Zhinst conn, const char *path)
 
+void
+ziAPIPollDataEx(Lab::Zhinst conn, Lab::Zhinst::ZIEvent ev, uint32_t timeOutMilliseconds)
+PPCODE:
+    int rv = ziAPIPollDataEx(conn, ev, timeOutMilliseconds);
+    mXPUSHi(rv);
+    if (rv == 0)
+        mXPUSHs(zievent_to_hash(aTHX_ ev));
 
-#void
-#ziAPIPollDataEx(Lab::Zhinst conn, Lab::Zhinst::ZIEvent ev, uint32_t timeOutMil#liseconds)
-#PPCODE:
-    
 
 IV
 ziAPIGetValueAsPollData(Lab::Zhinst conn, const char *path)
+
 
 #
 # Error Handling and Logging in the LabOne C API
