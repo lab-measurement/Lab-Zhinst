@@ -53,6 +53,24 @@ aux_in_sample_to_hash(pTHX_ ZIAuxInSample *sample)
 }
 
 static SV *
+impedance_sample_to_hash(pTHX_ ZIImpedanceSample *sample)
+{
+    HV *hash = newHV();
+    hv_stores(hash, "timeStamp", newSVuv(sample->timeStamp));
+    hv_stores(hash, "realz", newSVnv(sample->realz));
+    hv_stores(hash, "imagz", newSVnv(sample->imagz));
+    hv_stores(hash, "frequency", newSVnv(sample->frequency));
+    hv_stores(hash, "phase", newSVnv(sample->phase));
+    hv_stores(hash, "flags", newSVuv(sample->flags));
+    hv_stores(hash, "trigger", newSVuv(sample->trigger));
+    hv_stores(hash, "param0", newSVnv(sample->param0));
+    hv_stores(hash, "param1", newSVnv(sample->param1));
+    hv_stores(hash, "drive", newSVnv(sample->drive));
+    hv_stores(hash, "bias", newSVnv(sample->bias));
+    return newRV_noinc((SV *) hash);
+}
+
+static SV *
 zievent_value(pTHX_ ZIEvent *ev, uint32_t index)
 {
     uint32_t type = ev->valueType;
@@ -63,6 +81,14 @@ zievent_value(pTHX_ ZIEvent *ev, uint32_t index)
         return newSVnv(ev->value.doubleData[index]);
     case ZI_VALUE_TYPE_INTEGER_DATA:
         return newSViv(ev->value.integerData[index]);
+    case ZI_VALUE_TYPE_DEMOD_SAMPLE:
+        return demod_sample_to_hash(&ev->value.demodSample[index]);
+    case ZI_VALUE_TYPE_AUXIN_SAMPLE:
+        return aux_in_sample_to_hash(&ev->value.auxInSample[index]);
+    case ZI_VALUE_TYPE_DIO_SAMPLE:
+        return dio_sample_to_hash(&ev->value.dioSample[index]);
+    case ZI_VALUE_TYPE_IMPEDANCE_SAMPLE:
+        return impedance_sample_to_hash(&ev->value.impedanceSample[index]);
     default:
         croak("not yet implemented ZIEvent value type %u", type);
     }
