@@ -52,7 +52,7 @@ is($error_string, "Provided Buffer is too small", "ziAPIGetError");
 {
     my $event = ziAPIAllocateEventEx();
     isa_ok($event, "Lab::Zhinst::ZIEvent");
-    my $path = '/zi/config/port';
+    my $path = '/ZI/CONFIG/PORT';
     my ($rv) = $conn->Subscribe($path);
     is($rv, 0, "Subscribe retval");
     
