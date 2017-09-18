@@ -10,6 +10,7 @@
 #include "const-c.inc"
 
 typedef ZIConnection Lab__Zhinst;
+typedef ZIEvent      *Lab__Zhinst__ZIEvent;
 
 #define ALLOC_START_SIZE 100
 
@@ -85,18 +86,12 @@ CODE:
     ziAPIDestroy(conn);
 
 
-void
+IV
 ziAPIConnect(Lab::Zhinst conn, const char *hostname, uint16_t port)
-PPCODE:
-    int rv = ziAPIConnect(conn, hostname, port);
-    mXPUSHi(rv);
 
 
-void
+IV
 ziAPIDisconnect(Lab::Zhinst conn)
-PPCODE:
-    int rv = ziAPIDisconnect(conn);
-    mXPUSHi(rv);
 
 
 MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst
@@ -213,18 +208,12 @@ PPCODE:
     Safefree(buffer);
 
 
-void
+IV
 ziAPISetValueD(Lab::Zhinst conn, const char *path, ZIDoubleData value)
-PPCODE:
-    int rv = ziAPISetValueD(conn, path, value);
-    mXPUSHi(rv);
 
 
-void
+IV
 ziAPISetValueI(Lab::Zhinst conn, const char *path, IV value)
-PPCODE:
-    int rv = ziAPISetValueI(conn, path, value);
-    mXPUSHi(rv);
 
 
 void
@@ -279,18 +268,48 @@ PPCODE:
     Safefree(new_string);
 
 
-void
+IV
 ziAPISync(Lab::Zhinst conn)
-PPCODE:
-    int rv = ziAPISync(conn);
-    mXPUSHi(rv);
+
+IV
+ziAPIEchoDevice(Lab::Zhinst conn, const char *device_serial)
+
+#
+# Data Streaming
+#
+
+MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst
 
 void
-ziAPIEchoDevice(Lab::Zhinst conn, const char *device_serial)
+ziAPIAllocateEventEx()
 PPCODE:
-    int rv = ziAPIEchoDevice(conn, device_serial);
-    mXPUSHi(rv);
+    ZIEvent *event = ziAPIAllocateEventEx();
+    mXPUSHs(pointer_object(aTHX_ "Lab::Zhinst::ZIEvent", event));
 
+
+MODULE = Lab::Zhinst        PACKAGE = Lab::Zhinst::ZIEvent
+
+void
+DESTROY(Lab::Zhinst::ZIEvent ev)
+CODE:
+    ziAPIDeallocateEventEx(ev);
+
+MODULE = Lab::Zhinst		PACKAGE = Lab::Zhinst		PREFIX = ziAPI
+
+IV
+ziAPISubscribe(Lab::Zhinst conn, const char *path)
+
+IV
+ziAPIUnSubscribe(Lab::Zhinst conn, const char *path)
+
+
+#void
+#ziAPIPollDataEx(Lab::Zhinst conn, Lab::Zhinst::ZIEvent ev, uint32_t timeOutMil#liseconds)
+#PPCODE:
+    
+
+IV
+ziAPIGetValueAsPollData(Lab::Zhinst conn, const char *path)
 
 #
 # Error Handling and Logging in the LabOne C API
