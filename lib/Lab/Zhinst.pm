@@ -101,8 +101,6 @@ C API to Perl5.
 For full semantics of the various library functions, we refer to the
 L<LabOne manual|https://www.zhinst.com/sites/default/files/LabOneProgrammingManual_42388_0.pdf>.
 
-The following features have been added to make the interface more Perlish:
-
 =head2 Object orientation
 
 Most ziAPI functions receive a ZIConnection as their first argument. The C<Init>
@@ -119,27 +117,6 @@ where the first element is the error code:
 
 The return values are only valid if C<$error_code> is 0.
 
-=head1 LabOne API COVERAGE
-
-So far, this module only implements LabOne's core API. The 'data streaming' and
-'fast asynchronous operation' API's can be added on request.
-
-# =head1 EXPORTED FUNCTIONS
-
-# =head2 ziAPIListImplementations
-
-#  my $implementations = ListImplementations();
-
-# =head2 SetDebugLevel
-
-#  SetDebugLevel($level);
-
-# Allowed levels: 0 (trace), 1 (info), ..., 5 (fatal), 6 (status).
-
-# =head2 WriteDebugLog
-
-# WriteDebugLog($level, $message);
-
 =head1 FUNCTIONS/METHODS
 
 All non-methods are exported by default.
@@ -150,8 +127,8 @@ All non-methods are exported by default.
 
  my ($rv, $connection) = Lab::Zhinst->Init();
 
-Return Lab::Zhinst object. Automatically call C<ziAPIDestroy> if C<$connection>
-goes out of scope.
+Return Lab::Zhinst object. Automatically call C<ziAPIDestroy> on C<$connection>
+when it goes out of scope.
 
 =head3 Connect
 
@@ -175,7 +152,7 @@ goes out of scope.
 
  my ($rv, $nodes) = $connection->ListNodes($path, $bufferSize, $flags);
 
-C<$flags> is bitwise or of ZI_LIST_NODES_NONE, ZI_LIST_NODES_RECURSIVE,
+C<$flags> has to be bitwise or of ZI_LIST_NODES_NONE, ZI_LIST_NODES_RECURSIVE,
 ZI_LIST_NODES_ABSOLUTE, ZI_LIST_NODES_LEAFSONLY, ZI_LIST_NODES_SETTINGSONLY.
 
 =head2 Set and Get Parameters
@@ -193,12 +170,12 @@ ZI_LIST_NODES_ABSOLUTE, ZI_LIST_NODES_LEAFSONLY, ZI_LIST_NODES_SETTINGSONLY.
 
  my ($rv, $hash_ref) = $connection->GetDemodSample($path);
  # keys: timeStamp, x, y, frequency, phase, dioBits, trigger, auxIn0, auxIn1
- 
+
 =head3 GetDIOSample
 
  my ($rv, $hash_ref) = $connection->GetDIOSample($path);
  # keys: timeStamp, bits, reserved
- 
+
 =head3 GetAuxInSample
 
  my ($rv, $hash_ref) = $connection->GetAuxInSample($path);
@@ -246,7 +223,7 @@ ZI_LIST_NODES_ABSOLUTE, ZI_LIST_NODES_LEAFSONLY, ZI_LIST_NODES_SETTINGSONLY.
 
  my ($event) = ziAPIAllocateEventEx();
 
-Return object of type Lab::Zhinst::ZIEvent. Return undef on error.
+Return Lab::Zhinst::ZIEvent object or undef on error.
 
 C<ziAPIDeallocateEventEx> will be called on C<$event> when it goes out of
 scope.
@@ -274,7 +251,7 @@ structure:
  };
 
 For scalar data like ZIDoubleData, the elements of C<@values> are scalars. For
-Samples (Demod, AuxIn, DIO, ...) the elements are hashrefs.
+Samples (Demod, AuxIn, DIO, Impedance, ...) the elements are hashrefs.
 
 =head3 GetValueAsPollData
 
@@ -333,6 +310,10 @@ Feel free to contact us at
 =item * L<Blog post on Lab::Zhinst|http://blogs.perl.org/users/simon_reinhardt/2017/04/test.html>
 
 =item * L<Lab::Measurement>
+
+=item * L<USB::TMC>
+
+=item * L<Lab::VXI11>
 
 =item * L<Lab::VISA>
 
