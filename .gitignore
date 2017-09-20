@@ -10,4 +10,4 @@ const-*.inc
 /fallback/
 /pm_to_blib
 /Zhinst.bs
-/Lab-Zhinst*
+/Lab-Zhinst*/update-version.pl
