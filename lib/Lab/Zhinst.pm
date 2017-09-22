@@ -11,7 +11,7 @@ Lab::Zhinst - Perl bindings to the LabOne API of Zurich Instruments
  # LabOne's "Getting Started" example in Perl:
 
  # Create connection object
- my ($rv, $connection) = Lab::Zhinst->new();
+ my ($rv, $connection) = Lab::Zhinst->Init();
  if ($rv) {
      # handle error ...
  }
