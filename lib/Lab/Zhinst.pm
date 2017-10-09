@@ -99,7 +99,7 @@ The API provided by this module is basically a one-one mapping of the LabOne
 C API to Perl5.
 
 For full semantics of the various library functions, we refer to the
-L<LabOne manual|https://www.zhinst.com/sites/default/files/LabOneProgrammingManual_42388_0.pdf>.
+L<LabOne manual|https://www.zhinst.com/manuals/programming>.
 
 =head2 Object orientation
 
