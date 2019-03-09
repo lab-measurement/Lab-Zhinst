@@ -345,7 +345,7 @@ use Carp;
 require Exporter;
 use AutoLoader;
 
-our $VERSION = '1.02';
+our $VERSION = '2.00';
 our @ISA = qw(Exporter);
 
 our @EXPORT = qw(
