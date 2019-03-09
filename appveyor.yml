@@ -1,14 +1,21 @@
 environment:
   matrix:
     - strawberry_version: 5.20.3.3 --x86
+      labone_version: 17.12.51058
+    - strawberry_version: 5.20.3.3 --x86
+      labone_version: 16.12.42529
+    - strawberry_version: 5.20.3.3 --x86
+      labone_version: 18.05.54618
+    - strawberry_version: 5.20.3.3 --x86
+      labone_version: 18.12.59443
     - strawberry_version: 5.18.4.1 --x86
-      
+      labone_version: 17.12.51058
 install:
   - choco install --allowemptychecksum strawberryperl --version %strawberry_version%
   - path C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%
   - perl -V
   
-  - ps: Invoke-WebRequest https://www.zhinst.com/system/files/downloads/files/LabOne64-16.12.42529.msi -OutFile LabOne.msi
+  - ps: Invoke-WebRequest https://www.zhinst.com/system/files/downloads/files/LabOne64-%labone_version%.msi -OutFile LabOne.msi
   - start /wait msiexec.exe /l* labone.log /i LabOne.msi /qn ADDLOCAL=FT_ZI_API_C,FT_ZI_UHF
     # The import library needs to be in the Path
   - path "C:\Program Files\Zurich Instruments\LabOne\API\C\lib";%PATH%
