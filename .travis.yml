@@ -3,7 +3,7 @@ sudo: false
 language: perl
 
 env:
-  labone_version=18.12.59443
+  labone_version=17.12.51058
   
 perl:
   - 5.28
@@ -21,10 +21,11 @@ perl:
 matrix:
   include:
     - perl: 5.24
-      env:   labone_version=16.12.42529
+      env: labone_version=16.12.42529
     - perl: 5.24
-      env: labone_version=17.12.51058
-      
+      env: labone_version=18.12.59443
+    - perl: 5.24
+      env: labone_version=18.05.54618
 install:
   # Download ziAPI
   - cd /tmp

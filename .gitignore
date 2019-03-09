@@ -12,4 +12,5 @@ const-*.inc
 /Zhinst.bs
 /update-version.pl
 /Lab-Zhinst-*
-/pod2htmd.tmp
+/pod2htmd.tmpLabOneLinux*
+/LabOneLinux*
