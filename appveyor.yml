@@ -15,7 +15,7 @@ install:
   - path C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%
   - perl -V
   
-  - ps: Invoke-WebRequest https://www.zhinst.com/system/files/downloads/files/LabOne64-%labone_version%.msi -OutFile LabOne.msi
+  - ps: Invoke-WebRequest https://www.zhinst.com/system/files/downloads/files/LabOne64-$Env:labone_version.msi -OutFile LabOne.msi
   - start /wait msiexec.exe /l* labone.log /i LabOne.msi /qn ADDLOCAL=FT_ZI_API_C,FT_ZI_UHF
     # The import library needs to be in the Path
   - path "C:\Program Files\Zurich Instruments\LabOne\API\C\lib";%PATH%
