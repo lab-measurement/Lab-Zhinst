@@ -2,6 +2,9 @@ sudo: false
 
 language: perl
 
+env:
+  labone_version=18.12.59443
+  
 perl:
   - 5.28
   - 5.26
@@ -15,10 +18,17 @@ perl:
   - 5.10
   - 5.8
 
+matrix:
+  include:
+    - perl: 5.24
+      env:   labone_version=16.12.42529
+    - perl: 5.24
+      env: labone_version=17.12.51058
+      
 install:
   # Download ziAPI
   - cd /tmp
-  - wget www.zhinst.com/system/files/downloads/files/LabOneLinux64-16.12.42529.tar.gz
+  - wget www.zhinst.com/system/files/downloads/files/LabOneLinux64-$labone_version.tar.gz
   - tar -xf LabOne*
   - mkdir -p ~/local/lib ~/local/include
   - cp LabOne*/API/C/include/ziAPI.h ~/local/include
