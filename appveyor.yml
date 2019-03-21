@@ -15,7 +15,21 @@ environment:
     - strawberry_version: 5.20.3.3 --x86
       labone_version: 17.12.51058
       make_name: dmake
-      
+    - strawberry_version: 5.28.1.1
+      labone_version: 17.12.51058
+      make_name: gmake
+    - strawberry_version:  5.26.3.1
+      labone_version: 17.12.51058
+      make_name: gmake
+    - strawberry_version: 5.24.4.1
+      labone_version: 17.12.51058
+      make_name: dmake
+    - strawberry_version: 5.22.3.1
+      labone_version: 17.12.51058
+      make_name: dmake
+    - strawberry_version: 5.20.3.3
+      labone_version: 17.12.51058
+      make_name: dmake
 install:
   - choco install --allowemptychecksum strawberryperl --version %strawberry_version%
   - path C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%
