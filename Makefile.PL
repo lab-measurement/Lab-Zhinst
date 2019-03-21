@@ -38,6 +38,7 @@ elsif ($os eq 'MSWin32') {
 else {
     die "Unknown os $os";
 }
+print "CCFLAGS: $Config{ccflags}\n";
 
 WriteMakefile(
     ABSTRACT_FROM => 'lib/Lab/Zhinst.pm',
@@ -61,6 +62,7 @@ WriteMakefile(
         "Test::More" => 0
     },
     VERSION_FROM => 'lib/Lab/Zhinst.pm',
+    CCFLAGS => "$Config{ccflags} -Wall -Wno-deprecated-declarations",
     LIBS => [$libs],
     INC => $inc,
     META_MERGE => {
