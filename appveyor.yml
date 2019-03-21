@@ -1,15 +1,16 @@
 environment:
   matrix:
-    - strawberry_version: 5.20.3.3 --x86
+    - strawberry_version: 5.28.1.1 --x86
+      labone_version: 17.12.51058
+    - strawberry_version:  5.26.3.1 --x86
+      labone_version: 17.12.51058
+    - strawberry_version: 5.24.4.1 --x86
+      labone_version: 17.12.51058
+    - strawberry_version: 5.22.3.1 --x86
       labone_version: 17.12.51058
     - strawberry_version: 5.20.3.3 --x86
-      labone_version: 16.12.42529
-    - strawberry_version: 5.20.3.3 --x86
-      labone_version: 18.05.54618
-    - strawberry_version: 5.20.3.3 --x86
-      labone_version: 18.12.59443
-    - strawberry_version: 5.18.4.1 --x86
       labone_version: 17.12.51058
+      
 install:
   - choco install --allowemptychecksum strawberryperl --version %strawberry_version%
   - path C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%
