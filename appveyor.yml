@@ -19,7 +19,7 @@ environment:
       labone_version: 18.12.59443
       make_name: dmake
 
-  install:
+install:
   - choco install --allowemptychecksum strawberryperl --version %strawberry_version%
   - path C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%
   - perl -V
