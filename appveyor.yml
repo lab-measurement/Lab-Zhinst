@@ -15,6 +15,9 @@ environment:
     - strawberry_version: 5.20.3.3 --x86
       labone_version: 17.12.51058
       make_name: dmake
+    - strawberry_version: 5.30.0.1
+      labone_version: 17.12.51058
+      make_name: gmake
     - strawberry_version: 5.28.1.1
       labone_version: 17.12.51058
       make_name: gmake
