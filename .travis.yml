@@ -27,6 +27,8 @@ matrix:
       env: labone_version=18.12.59443
     - perl: 5.24
       env: labone_version=18.05.54618
+    - perl: 5.24
+      env: labone_version=19.05.64471
 install:
   # Download ziAPI
   - cd /tmp
