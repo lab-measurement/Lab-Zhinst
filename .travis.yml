@@ -34,7 +34,7 @@ matrix:
 install:
   # Download ziAPI
   - cd /tmp
-  - wget www.zhinst.com/system/files/downloads/files/LabOneLinux64-$labone_version.tar.gz
+  - wget www.zhinst.com/sites/default/files/download-center/LabOneLinux64-$labone_version.tar.gz
   - tar -xf LabOne*
   - mkdir -p ~/local/lib ~/local/include
   - cp LabOne*/API/C/include/ziAPI.h ~/local/include
