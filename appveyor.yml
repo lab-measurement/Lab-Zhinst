@@ -1,12 +1,12 @@
 environment:
   matrix:
     # most recent SP with most recent LabOne
-    - strawberry_version: 5.30.0.1
-      labone_version: 20.01.1211
-      make_name: gmake
+    #- strawberry_version: 5.30.0.1
+    #  labone_version: 20.01.1211
+    #  make_name: gmake
     # check compatibility with older versions of LabOne
     - strawberry_version: 5.30.0.1
-      labone_version: 18.12.59443
+      labone_version: 18.12.60796
       make_name: gmake
     - strawberry_version: 5.28.2.1
       labone_version: 18.05.54618
@@ -19,13 +19,13 @@ environment:
       make_name: gmake
     # 32 bit Perl
     - strawberry_version: 5.30.0.1 --x86
-      labone_version: 18.12.59443
+      labone_version: 18.12.60796
       make_name: gmake
     - strawberry_version: 5.28.1.1
-      labone_version: 19.05.64471
+      labone_version: 19.05.65305
       make_name: gmake
     - strawberry_version: 5.20.3.3 --x86
-      labone_version: 18.12.59443
+      labone_version: 18.12.60796
       make_name: dmake
 
 install:
