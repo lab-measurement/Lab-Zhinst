@@ -9,10 +9,10 @@ jobs:
         labone:
           ['https://zhinst.com/sites/default/files/download-center/LabOneLinux64-16.12.42529.tar.gz',
           'https://zhinst.com/sites/default/files/download-center/LabOneLinux64-17.12.51058.tar.gz',
-          'https://www.zhinst.com/sites/default/files/download-center/LabOneLinux64-18.12.60796.tar.gz',
+          'https://zhinst.com/sites/default/files/download-center/LabOneLinux64-18.12.60796.tar.gz',
           'https://zhinst.com/sites/default/files/download-center/LabOneLinux64-19.05.65305.tar.gz',
-          'https://www.zhinst.com/sites/default/files/media/release_file/2020-12/LabOneLinux64-20.07.2701.tar.gz',
-          'https://nginx.prod.zhinst.ch4.amazee.io/sites/default/files/media/release_file/2021-09/LabOneLinux64-21.08.20515.tar.gz'
+          'https://zhinst.com/sites/default/files/media/release_file/2020-12/LabOneLinux64-20.07.2701.tar.gz',
+          'https://zhinst.com/sites/default/files/media/release_file/2021-09/LabOneLinux64-21.08.20515.tar.gz'
           ]
     steps:
       - uses: actions/checkout@v2
