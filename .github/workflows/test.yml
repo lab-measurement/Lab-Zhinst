@@ -5,7 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        perl: ['5.24', '5.26', '5.28', '5.30', '5.32', '5.34']
+        perl: ['5.30', '5.32', '5.34']
+        labone:
+          ['https://zhinst.com/sites/default/files/download-center/LabOneLinux64-16.12.42529.tar.gz','https://zhinst.com/sites/default/files/download-center/LabOneLinux64-17.12.51058.tar.gz']
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -16,4 +18,6 @@ jobs:
       - name: test-script
         run: ./.github/scripts/test-script.bash
         shell: bash
+        env:
+          LABONE_VERSION: ${{matrix.labone}}
       
