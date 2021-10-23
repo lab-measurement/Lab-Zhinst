@@ -1,3 +1,6 @@
+# Stop script on first error
+set -o errexit
+
 # check perl version
 perl --version
 
