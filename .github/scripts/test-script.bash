@@ -16,6 +16,7 @@ export CPATH=$HOME/local/include
 printenv LD_LIBRARY_PATH
 
 cd $GITHUB_WORKSPACE
+cpanm Test::Pod
 perl Makefile.PL
 make
 /tmp/LabOne*/DataServer/ziDataServer &
